@@ -1,4 +1,8 @@
-﻿function BackgroundScene(texture, width, height, startX, startY, deltax) {
+﻿//Temporary variables for screen size
+sWidth = 800;
+sHeight = 600;
+
+function BackgroundScene(texture, width, height, startX, startY, deltax) {
 	PIXI.TilingSprite.call(this, texture, width, height);
 
 	this.position.x = startX;
@@ -8,6 +12,11 @@
 
 	this.viewportX = 0;
 	this.deltax = deltax;
+	
+	//added temporary code
+	this.speed = 5;
+	this.width = width;
+	this.height = height;
 }
 
 BackgroundScene.constructor = BackgroundScene;
@@ -17,4 +26,18 @@ BackgroundScene.prototype.setViewportX = function(newViewportX) {
 	var distanceTravelled = newViewportX - this.viewportX;
 	this.viewportX = newViewportX;
 	this.tilePosition.x -= (distanceTravelled * this.deltax);
+};
+
+/********************** TEMPORARY CODE TO DEMONSTRATE OBJECT MOVEMENT *********************/
+
+BackgroundScene.prototype.moveObject = function() {
+	if(this.isOffScreen())
+		this.speed *= -1;
+	this.position.x += this.speed;
+};
+
+BackgroundScene.prototype.isOffScreen = function() {
+	if(this.position.x + this.width > sWidth || this.position.x < 0) {
+		return true;
+	}	
 };

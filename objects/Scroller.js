@@ -35,7 +35,16 @@
 		0.32
 	);
 	//stage.addChild(this.near);
-	
+	var shipTexture = PIXI.Texture.fromImage("resources/KB_ship.png");
+	this.ship = new BackgroundScene(
+	nearTexture,
+	shipTexture.baseTexture.width,
+	shipTexture.baseTexture.height,
+	0,
+	128,
+	0.32
+	);
+	stage.addChild(this.ship);
 	
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
@@ -65,5 +74,6 @@ Scroller.prototype.getViewportX = function() {
 
 Scroller.prototype.moveViewportXBy = function(units) {
 	var newViewportX = this.viewportX + units;
+	this.ship.moveObject();
 	this.setViewportX(newViewportX);
 };
