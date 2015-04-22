@@ -14,8 +14,8 @@ AsteroidSpritesPool.prototype.createAsteroids = function() {
 	this.asteroids = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addAsteroidSprites(6, "window_01");
-	this.addAsteroidSprites(6, "window_02");
+	this.addAsteroidSprites(6, "KB_BigAsteroid.png");
+	this.addAsteroidSprites(6, "KB_BigAsteroid.png");
 
 	this.shuffle(this.asteroids);
 };

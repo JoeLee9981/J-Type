@@ -37,7 +37,7 @@
 	//stage.addChild(this.near);
 	var shipTexture = PIXI.Texture.fromImage("resources/KB_ship.png");
 	this.ship = new BackgroundScene(
-	nearTexture,
+	shipTexture,
 	shipTexture.baseTexture.width,
 	shipTexture.baseTexture.height,
 	0,
