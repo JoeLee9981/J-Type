@@ -35,9 +35,9 @@
 		0.32
 	);
 	//stage.addChild(this.near);
-	var shipTexture = PIXI.Texture.fromImage("resources/KB_ship.png");
+	var shipTexture = PIXI.Texture.fromImage("resources/bg-mid.png");
 	this.ship = new BackgroundScene(
-	shipTexture,
+	nearTexture,
 	shipTexture.baseTexture.width,
 	shipTexture.baseTexture.height,
 	0,
@@ -45,6 +45,11 @@
 	0.32
 	);
 	stage.addChild(this.ship);
+	
+	var slice2 = PIXI.Sprite.fromFrame("resources/KB_ship.png");
+	slice2.position.x = 100;
+	slice2.position.y = 100;
+	stage.addChild(slice2);
 	
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
