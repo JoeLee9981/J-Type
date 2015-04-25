@@ -34,22 +34,6 @@
 		0,
 		0.32
 	);
-	//stage.addChild(this.near);
-	var shipTexture = PIXI.Texture.fromImage("resources/bg-mid.png");
-	this.ship = new BackgroundScene(
-	nearTexture,
-	shipTexture.baseTexture.width,
-	shipTexture.baseTexture.height,
-	0,
-	128,
-	0.32
-	);
-	stage.addChild(this.ship);
-	
-	var slice2 = PIXI.Sprite.fromFrame("resources/KB_ship.png");
-	slice2.position.x = 100;
-	slice2.position.y = 100;
-	stage.addChild(slice2);
 	
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
@@ -65,6 +49,7 @@
 	stage.addChild(this.bullets);
 
 	this.viewportX = 0;
+	this.last = 0; //last saved time used to determine when to draw new objects
 }
 
 Scroller.prototype.setViewportX = function(viewportX) {
@@ -77,8 +62,16 @@ Scroller.prototype.getViewportX = function() {
 	return this.viewportX;
 };
 
-Scroller.prototype.moveViewportXBy = function(units) {
+Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	var newViewportX = this.viewportX + units;
-	this.ship.moveObject();
+
+	if(currTime - this.last > 1000) {
+		this.asteroids.addNewSprite(SpriteType.ASTEROID_SMALL, 400, -100, Math.floor(Math.random() * 4));
+		this.last = currTime;
+	}
+	
+	this.asteroids.update(currTime);
+
 	this.setViewportX(newViewportX);
 };
+

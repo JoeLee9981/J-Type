@@ -23,8 +23,7 @@ BulletSpritesPool.prototype.createEnemyBullets = function() {
 	this.enemyBullets = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addEnemyBulletSprites(6, "window_01");
-	this.addEnemyBulletSprites(6, "window_02");
+	this.addEnemyBulletSprites(30, "resources/KB_Laserbullets_Aqua.png");
 
 	this.shuffle(this.enemyBullets);
 };
@@ -33,8 +32,7 @@ BulletSpritesPool.prototype.createProtagBullets = function() {
 	this.protagBullets = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addProtagBulletSprites(6, "window_01");
-	this.addProtagBulletSprites(6, "window_02");
+	this.addProtagBulletSprites(30, "resources/KB_Laserbullets_Red.png");
 
 	this.shuffle(this.protagBullets);
 };
