@@ -1,39 +1,40 @@
 ﻿function Scroller(stage) {
 	// Background Sprites
 	// TODO: Put in image path.
-	var farTexture = PIXI.Texture.fromImage("resources/bg-far.png");
+	var farTexture = PIXI.Texture.fromImage("resources/jtype-bg-far.png");
 	this.far = new BackgroundScene(
 		farTexture,
 		farTexture.baseTexture.width,
 		farTexture.baseTexture.height,
 		0,
 		0,
-		0.128
+		0.09
 	);
 	stage.addChild(this.far);
 
 	// TODO: Put in image path.
-	var midTexture = PIXI.Texture.fromImage("resources/bg-mid.png");
+	var midTexture = PIXI.Texture.fromImage("resources/jtype-bg-mid.png");
 	this.mid = new BackgroundScene(
 		midTexture,
 		midTexture.baseTexture.width,
 		midTexture.baseTexture.height,
 		0,
-		128,
-		0.64
+		0,
+		0.3
 	);
 	stage.addChild(this.mid);
 	
 	// TODO: Put in image path.
-	var nearTexture = PIXI.Texture.fromImage("resources/bg-mid.png");
+	var nearTexture = PIXI.Texture.fromImage("resources/jtype-bg-near.png");
 	this.near = new BackgroundScene(
 		nearTexture,
 		nearTexture.baseTexture.width,
 		nearTexture.baseTexture.height,
 		0,
 		0,
-		0.32
+		0.6
 	);
+	stage.addChild(this.near);
 	
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
@@ -59,6 +60,7 @@ Scroller.prototype.setViewportX = function(viewportX) {
 	this.viewportX = viewportX;
 	this.far.setViewportX(viewportX);
 	this.mid.setViewportX(viewportX);
+	this.near.setViewportX(viewportX);
 };
 
 Scroller.prototype.getViewportX = function() {
