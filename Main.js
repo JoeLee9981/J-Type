@@ -4,6 +4,10 @@ var vx = 0;
 var vy = 0;
 var firing = 0;
 
+debug = true;
+playing = true;
+gameover = false;
+
 //Timer
 var d = new Date();
 var startTime = d.getTime();
@@ -24,12 +28,14 @@ function Main() {
 Main.SCROLL_SPEED = 5;
 
 Main.prototype.update = function() {
-	var now = new Date().getTime(); //current time in ms used to control animation speeds
 	
-	this.scroller.moveViewportXBy(now, Main.SCROLL_SPEED);
-	this.renderer.render(this.stage);
-	this.updateTimer();
-	
+	if(playing) {
+		var now = new Date().getTime(); //current time in ms used to control animation speeds
+		
+		this.scroller.moveViewportXBy(now, Main.SCROLL_SPEED);
+		this.renderer.render(this.stage);
+		this.updateTimer();
+	}
 	requestAnimFrame(this.update.bind(this));
 };
 

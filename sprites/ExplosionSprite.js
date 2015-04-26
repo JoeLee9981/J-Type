@@ -12,14 +12,14 @@ function ExplosionSprite() {
 
 ExplosionSprite.prototype.update = function(currTime) {
 	if(currTime - this.borrowed >= 100 / this.speed) {
+		
+		
 		if(this.frame == 4) {
 			this.destroy = true;
-			//undo the scale
-			this.sprite.width /= this.scale;
-			this.sprite.height /= this.scale;
 			return;
 		}
 		this.frame++;
+
 		this.sprite.setTexture(this.textures[this.frame]);
 		this.borrowed = currTime
 	}
@@ -30,6 +30,7 @@ ExplosionSprite.prototype.update = function(currTime) {
  *	Use this function to set the sprite at a specified x and y position instead of the default in the pattern
  */
 ExplosionSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, speed) {
+	
 	this.borrowed = new Date().getTime(); //clock when we created (this is temp until we can detect bounds)
 	this.sprite = sprite;
 	this.sprite.position.x = start_x;
@@ -42,6 +43,12 @@ ExplosionSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, 
 	this.frame = 0;
 	this.sprite.setTexture(this.textures[this.frame]);
 	this.destroy = false;
+}
+
+ExplosionSprite.prototype.resetScale = function() {
+	//if this has been scaled before, revert
+	this.sprite.width /= this.scale;
+	this.sprite.height /= this.scale;
 }
 
 ExplosionSprite.SLOW = .5;

@@ -28,7 +28,7 @@ Explosions.prototype.update = function(currTime) {
 	for(var i = 0; i < this.MAX_EXPLOSIONS; i++) {
 		if(this.sprites[i].sprite != null) {
 			if(this.sprites[i].destroy) {
-				
+				this.sprites[i].resetScale(); //need to reset the scale
 				this.removeOldSprite(i);
 			}
 			else {
