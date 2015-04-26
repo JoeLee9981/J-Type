@@ -1,13 +1,17 @@
 function Bullets() {
 	PIXI.DisplayObjectContainer.call(this);
 
+	this.MAX_BULLETS = 20;
 	this.pool = new BulletSpritesPool();
 	this.createLookupTables();
 
-	this.sprites = [];
+	this.protagSprites = [];
+	this.enemySprites = [];
 
 	this.viewportX = 0;
 	this.viewportSpriteX = 0;
+	
+	this.addBulletsToMap();
 }
 
 Bullets.constructor = Bullets;
@@ -27,7 +31,7 @@ Bullets.prototype.setViewportX = function(viewportX) {
 };
 
 Bullets.prototype.checkViewportXBounds = function(viewportX) {
-	var maxViewportX = (this.sprites.length - Bullets.VIEWPORT_NUM_SPRITES) * 
+	var maxViewportX = (this.protagSprites.length - Bullets.VIEWPORT_NUM_SPRITES) * 
 						BulletSprite.WIDTH;
 	if (viewportX < 0)
 	{
@@ -50,7 +54,7 @@ Bullets.prototype.removeOldSprites = function(prevViewportSpriteX) {
 
 	for (var i = prevViewportSpriteX; i < prevViewportSpriteX + numOldSprites; i++)
 	{
-		var newSprite = this.sprites[i];
+		var newSprite = this.protagSprites[i];
 		if (newSprite.sprite != null)
 		{
 			this.returnBulletSprite(newSprite.type, newSprite.sprite);
@@ -60,9 +64,23 @@ Bullets.prototype.removeOldSprites = function(prevViewportSpriteX) {
 	}
 };
 
-Bullets.prototype.addSprite = function(spriteType, y) {
-	var newSprite = new BulletSprite(spriteType, y);
-	this.sprites.push(newSprite);
+Bullets.prototype.removeOldEnemySprite = function() {
+	this.returnAsteroidSprite(this.sprites[index].type, this.sprites[index].sprite);
+	this.removeChild(this.sprites[index].sprite);
+	this.sprites[index].sprite = null;
+}
+
+Bullets.prototype.removeOldProtagSprite = function() {
+}
+
+Bullets.prototype.addProtagSprite = function() {
+	var newSprite = new BulletSprite(BulletSprite.PROTAG_BULLET);
+	this.protagSprites.push(newSprite);
+};
+
+Bullets.prototype.addEnemySprite = function() {
+	var newSprite = new BulletSprite(BulletSprite.ENEMY_BULLET);
+	this.enemySprites.push(newSprite);
 };
 
 Bullets.prototype.addNewSprites = function() {
@@ -71,7 +89,7 @@ Bullets.prototype.addNewSprites = function() {
 			 i < this.viewportSpriteX + Bullets.VIEWPORT_NUM_SPRITES;
 			 i++, spriteIndex++)
 	{
-		var newSprite = this.sprites[i];
+		var newSprite = this.protagSprites[i];
 		if (newSprite.sprite == null)
 		{
 			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
@@ -88,14 +106,45 @@ Bullets.prototype.addNewSprites = function() {
 	}
 };
 
+Bullets.prototype.addNewProtagSprite = function(start_x, start_y) {
+	//scan for open spot in the array to add our new asteroid
+	for(var i = 0; i < this.MAX_BULLETS; i++) {
+		if(this.protagSprites[i].sprite == null) {
+			var newSprite = this.protagSprites[i];
+			
+			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
+			
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
+};
+
+Bullets.prototype.addNewEnemySprite = function(start_x, start_y) {
+	//scan for open spot in the array to add our new asteroid
+	for(var i = 0; i < this.MAX_BULLETS; i++) {
+		if(this.enemySprites[i].sprite == null) {
+			var newSprite = this.enemySprites[i];
+			
+			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
+			newSprite.sprite.rotation =  Math.PI;
+
+			newSprite.sprite.position.x = 1000;
+			newSprite.sprite.position.y = 300;
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
+}
+
 Bullets.prototype.createLookupTables = function() {
 	this.borrowBulletSpriteLookup = [];
-	this.borrowBulletSpriteLookup[SpriteType.ENEMY_BULLET] = this.pool.borrowEnemyBullet;
-	this.borrowBulletSpriteLookup[SpriteType.PROTAG_BULLET] = this.pool.borrowProtagBullet;
+	this.borrowBulletSpriteLookup[BulletSprite.ENEMY_BULLET] = this.pool.borrowEnemyBullets;
+	this.borrowBulletSpriteLookup[BulletSprite.PROTAG_BULLET] = this.pool.borrowProtagBullets;
 
 	this.returnBulletSpriteLookup = [];
-	this.returnBulletSpriteLookup[SpriteType.ENEMY_BULLET] = this.pool.returnEnemyBullet;
-	this.returnBulletSpriteLookup[SpriteType.PROTAG_BULLET] = this.pool.returnProtagBullet;
+	this.returnBulletSpriteLookup[BulletSprite.ENEMY_BULLET] = this.pool.returnEnemyBullets;
+	this.returnBulletSpriteLookup[BulletSprite.PROTAG_BULLET] = this.pool.returnProtagBullets;
 };
 
 Bullets.prototype.borrowBulletSprite = function(spriteType) {
@@ -104,4 +153,23 @@ Bullets.prototype.borrowBulletSprite = function(spriteType) {
 
 Bullets.prototype.returnBulletSprite = function(spriteType, newSprite) {
 	return this.returnBulletSpriteLookup[spriteType].call(this.pool, newSprite);
+};
+
+Bullets.prototype.update = function() {
+	//TODO this is wasteful, let's keep a list of active bullets
+	for(var i = 0; i < this.MAX_BULLETS; i++) {
+		if(this.protagSprites[i].sprite != null) {
+			this.protagSprites[i].update();
+		}
+		if(this.enemySprites[i].sprite != null) {
+			this.enemySprites[i].update();
+		}
+	}
+}
+
+Bullets.prototype.addBulletsToMap = function() {
+	for(var i = 0; i < this.MAX_BULLETS; i++) {
+		this.addProtagSprite();
+		this.addEnemySprite();
+	}
 };

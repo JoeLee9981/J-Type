@@ -47,9 +47,12 @@
 	
 	this.bullets = new Bullets();
 	stage.addChild(this.bullets);
+	this.bullets.addNewProtagSprite();
+	this.bullets.addNewEnemySprite();
 
 	this.viewportX = 0;
 	this.last = 0; //last saved time used to determine when to draw new objects
+	this.lastBullet = 0;
 }
 
 Scroller.prototype.setViewportX = function(viewportX) {
@@ -69,7 +72,12 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		this.asteroids.addNewSprite(SpriteType.ASTEROID_SMALL, 400, -100, Math.floor(Math.random() * 4));
 		this.last = currTime;
 	}
-	
+	else if(currTime - this.lastBullet > 300) {
+		this.bullets.addNewProtagSprite();
+		this.bullets.addNewEnemySprite();
+		this.lastBullet = currTime;
+	}
+	this.bullets.update();
 	this.asteroids.update(currTime);
 
 	this.setViewportX(newViewportX);
