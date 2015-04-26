@@ -64,13 +64,18 @@ Bullets.prototype.removeOldSprites = function(prevViewportSpriteX) {
 	}
 };
 
-Bullets.prototype.removeOldEnemySprite = function() {
-	this.returnAsteroidSprite(this.sprites[index].type, this.sprites[index].sprite);
-	this.removeChild(this.sprites[index].sprite);
-	this.sprites[index].sprite = null;
+Bullets.prototype.removeOldProtagSprite = function(index) {
+	this.protagSprites[index].destroy = 0;
+	this.returnBulletSprite(this.protagSprites[index].type, this.protagSprites[index].sprite);
+	this.removeChild(this.protagSprites[index].sprite);
+	this.protagSprites[index].reset();
 }
 
-Bullets.prototype.removeOldProtagSprite = function() {
+Bullets.prototype.removeOldEnemySprite = function(index) {
+	this.returnBulletSprite(this.enemySprites[index].type, this.enemySprites[index].sprite);
+	this.removeChild(this.enemySprites[index].sprite);
+	this.enemySprites[index].sprite = null;
+	this.enemySprites[index].reset();
 }
 
 Bullets.prototype.addProtagSprite = function() {
@@ -113,6 +118,8 @@ Bullets.prototype.addNewProtagSprite = function(start_x, start_y) {
 			var newSprite = this.protagSprites[i];
 			
 			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
+			newSprite.sprite.position.x = start_x;
+			newSprite.sprite.position.y = start_y;
 			
 			this.addChild(newSprite.sprite);
 			break;
@@ -129,8 +136,8 @@ Bullets.prototype.addNewEnemySprite = function(start_x, start_y) {
 			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
 			newSprite.sprite.rotation =  Math.PI;
 
-			newSprite.sprite.position.x = 1000;
-			newSprite.sprite.position.y = 300;
+			newSprite.sprite.position.x = start_x;
+			newSprite.sprite.position.y = start_y;
 			this.addChild(newSprite.sprite);
 			break;
 		}
@@ -160,9 +167,15 @@ Bullets.prototype.update = function() {
 	for(var i = 0; i < this.MAX_BULLETS; i++) {
 		if(this.protagSprites[i].sprite != null) {
 			this.protagSprites[i].update();
+			if(this.protagSprites[i].destroy) {
+				this.removeOldProtagSprite(i);
+			}
 		}
 		if(this.enemySprites[i].sprite != null) {
 			this.enemySprites[i].update();
+			if(this.enemySprites[i].destroy) {
+				this.removeOldEnemySprite(i);
+			}
 		}
 	}
 }

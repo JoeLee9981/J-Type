@@ -22,70 +22,19 @@ function Asteroids() {
 Asteroids.constructor = Asteroids;
 Asteroids.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-Asteroids.VIEWPORT_WIDTH = 800;
-Asteroids.VIEWPORT_NUM_SPRITES = Math.ceil(Asteroids.VIEWPORT_WIDTH/AsteroidSprite.WIDTH) + 1;
-
-Asteroids.prototype.setViewportX = function(viewportX) {
-	this.viewportX = this.checkViewportXBounds(viewportX);
-
-	var prevViewportSpriteX = this.viewportSpriteX;
-	this.viewportSpriteX = Math.floor(this.viewportX/AsteroidSprite.WIDTH);
-
-	this.removeOldSprites(prevViewportSpriteX);
-	this.addNewSprites();
-};
-
 /*
  *	This is the update loop to move all the asteroids.
  */
 Asteroids.prototype.update = function(currTime) {
 	for(var i = 0; i < this.MAX_ASTEROIDS; i++) {
 		if(this.sprites[i].sprite != null) {
-			if(currTime - this.sprites[i].borrowed > 10000) {
-				//TODO: Need a better method of tracking this, but can't until bounds are fixed
-				//timeout and return this after 5000, since it's off the screen
+			if(this.sprites[i].destroy) {
+				
 				this.removeOldSprite(i);
 			}
 			else {
 				this.sprites[i].update();
 			}
-		}
-	}
-};
-
-Asteroids.prototype.checkViewportXBounds = function(viewportX) {
-	var maxViewportX = (this.sprites.length - Asteroids.VIEWPORT_NUM_SPRITES) * 
-						AsteroidSprite.WIDTH;
-	if (viewportX < 0)
-	{
-		viewportX = 0;
-	}
-	else if (viewportX > maxViewportX)
-	{
-		viewportX = maxViewportX;
-	}
-
-	return viewportX;
-};
-
-/*
- *	This method was used for buildings, may not be useful to us
- */
-Asteroids.prototype.removeOldSprites = function(prevViewportSpriteX) {
-	var numOldSprites = this.viewportSpriteX - prevViewportSpriteX;
-	if (numOldSprites > Asteroids.VIEWPORT_NUM_SPRITES)
-	{
-		numOldSprites = Asteroids.VIEWPORT_NUM_SPRITES;
-	}
-
-	for (var i = prevViewportSpriteX; i < prevViewportSpriteX + numOldSprites; i++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite != null)
-		{
-			this.returnAsteroidSprite(newSprite.type, newSprite.sprite);
-			this.removeChild(newSprite.sprite);
-			newSprite.sprite = null;
 		}
 	}
 };
@@ -105,33 +54,6 @@ Asteroids.prototype.removeOldSprite = function(index) {
 Asteroids.prototype.addSprite = function(spriteType) {
 	var newSprite = new AsteroidSprite(spriteType); //default to pattern 1, can be changed
 	this.sprites.push(newSprite);
-};
-
-/*
- *	This method was intended for buildings - it will need to be heavily
- *		modified if you want to use it for asteroids
- */
-Asteroids.prototype.addNewSprites = function() {
-	var firstX = -(this.viewportX % AsteroidSprite.WIDTH);
-	for (var i = this.viewportSpriteX, spriteIndex = 0;
-			 i < this.viewportSpriteX + Asteroids.VIEWPORT_NUM_SPRITES;
-			 i++, spriteIndex++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite == null)
-		{
-			newSprite.sprite = this.borrowAsteroidSprite(newSprite.type);
-
-			newSprite.sprite.position.x = firstX + (spriteIndex * AsteroidSprite.WIDTH);
-			newSprite.sprite.position.y = newSprite.y;
-
-			this.addChild(newSprite.sprite);
-		}
-		else
-		{
-			newSprite.sprite.position.x = firstX + (spriteIndex * AsteroidSprite.WIDTH);
-		}
-	}
 };
 
 /*

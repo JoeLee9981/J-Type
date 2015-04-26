@@ -12,7 +12,17 @@ function PlayerShipSprite(sprite) {
 PlayerShipSprite.prototype.update = function(now, vx, vy) {
 	this.sprite.position.x += vx * this.speed;
 	this.sprite.position.y += vy * this.speed;
-
+	
+	//clip the ship to the screen
+	if(this.sprite.position.x + this.sprite.width > 800)
+		this.sprite.position.x = 800 - this.sprite.width;
+	if(this.sprite.position.x < 0)
+		this.sprite.position.x = 0;
+	if(this.sprite.position.y < 0)
+		this.sprite.position.y = 0;
+	else if(this.sprite.position.y + this.sprite.height > 600)
+		this.sprite.position.y = 600 - this.sprite.height;
+	
 	//this is to flicker the flames
 	if(vx > 0 && this.frame == 0) {
 		this.sprite.setTexture(this.texture2);
@@ -32,3 +42,11 @@ PlayerShipSprite.prototype.update = function(now, vx, vy) {
 		this.frame = 0;
 	}
 }
+
+this.PlayerShipSprite.prototype.getCenterX = function() {
+	return this.sprite.position.x + (this.sprite.width / 2);
+}
+
+this.PlayerShipSprite.prototype.getCenterY = function() {
+	return this.sprite.position.y + (this.sprite.height / 2);
+} 

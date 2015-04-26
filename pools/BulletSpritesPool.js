@@ -24,8 +24,6 @@ BulletSpritesPool.prototype.createEnemyBullets = function() {
 
 	// TODO: Add correct number of sprites. Change spriteID.
 	this.addEnemyBulletSprites(20, "resources/KB_Laserbullets_Aqua.png");
-
-	this.shuffle(this.enemyBullets);
 };
 
 BulletSpritesPool.prototype.createProtagBullets = function() {
@@ -33,8 +31,6 @@ BulletSpritesPool.prototype.createProtagBullets = function() {
 
 	// TODO: Add correct number of sprites. Change spriteID.
 	this.addProtagBulletSprites(20, "resources/KB_Laserbullets_Red.png");
-
-	this.shuffle(this.protagBullets);
 };
 
 BulletSpritesPool.prototype.addEnemyBulletSprites = function(amount, frameId) {
@@ -50,16 +46,5 @@ BulletSpritesPool.prototype.addProtagBulletSprites = function(amount, frameId) {
 	{
 		var sprite = PIXI.Sprite.fromFrame(frameId);
 		this.protagBullets.push(sprite);
-	}
-};
-
-BulletSpritesPool.prototype.shuffle = function(array) {
-	var len = array.length;
-	var shuffles = len * 3;
-	for (var i = 0; i < shuffles; i++)
-	{
-		var bulletSprite = array.pop();
-		var pos = Math.floor(Math.random() * (len-1));
-		array.splice(pos, 0, bulletSprite);
 	}
 };

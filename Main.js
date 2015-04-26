@@ -2,6 +2,7 @@
 //Ship velocities
 var vx = 0;
 var vy = 0;
+var firing = 0;
 
 //Timer
 var d = new Date();
@@ -27,14 +28,14 @@ Main.prototype.update = function() {
 	
 	this.scroller.moveViewportXBy(now, Main.SCROLL_SPEED);
 	this.renderer.render(this.stage);
-	this.player_ship.update(now, vx, vy);
 	this.updateTimer();
 	
 	requestAnimFrame(this.update.bind(this));
 };
 
 Main.prototype.loadSpriteSheet = function() {
-	var assetsToLoad = [ "resources/wall.json", "resources/spritesheet.json", 
+	var assetsToLoad = [ "resources/jtype-bg-far.png", "resources/jtype-bg-mid.png",
+						 "resources/wall.json", "resources/jtype-bg-near.png", "resources/spritesheet.json", 
 						 "resources/bg-far.png", "resources/bg-mid.png", 
 						 "resources/KB_BigAsteroid.png", "resources/KB_MidAsteroid.png",
 						 "resources/KB_lilAsteroid.png", "resources/KB_EnemyBabyShip.png",
@@ -54,12 +55,6 @@ Main.prototype.loadSpriteSheet = function() {
 
 Main.prototype.spriteSheetLoaded = function() {
 	this.scroller = new Scroller(this.stage);	
-
-	var ship = PIXI.Sprite.fromFrame("resources/KB_ship.png");
-	this.player_ship = new PlayerShipSprite(ship);
-	this.player_ship.sprite.position.x = 100;
-	this.player_ship.sprite.position.y = 100;
-	this.stage.addChild(this.player_ship.sprite);
 	
 	var timerText = new PIXI.Text("Time: 00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
 	this.timeLabel = timerText;
@@ -106,6 +101,16 @@ function setupKeyEvents() {
 	var right = keyboard(39);
 	var up = keyboard(38);
 	var down = keyboard(40);
+	var space = keyboard(32);
+	
+	space.press = function() {
+		firing = 1;
+	}
+	
+	space.release = function() {
+		firing = 0;
+	}
+	
 	left.press = function() {
 		vx = -1;
 	}
