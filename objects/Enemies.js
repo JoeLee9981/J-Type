@@ -2,9 +2,11 @@ function Enemies() {
 	PIXI.DisplayObjectContainer.call(this);
 
 	this.pool = new EnemySpritesPool();
-	this.createLookupTables();
+
+	this.MAX_ENEMIES = 10;
 
 	this.sprites = [];
+	this.addEnemiesToMap();
 
 	this.viewportX = 0;
 	this.viewportSpriteX = 0;
@@ -13,94 +15,88 @@ function Enemies() {
 Enemies.constructor = Enemies;
 Enemies.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-Enemies.VIEWPORT_WIDTH = 800;
-Enemies.VIEWPORT_NUM_SPRITES = Math.ceil(Enemies.VIEWPORT_WIDTH/EnemySprite.WIDTH) + 1;
-
-Enemies.prototype.setViewportX = function(viewportX) {
-	this.viewportX = this.checkViewportXBounds(viewportX);
-
-	var prevViewportSpriteX = this.viewportSpriteX;
-	this.viewportSpriteX = Math.floor(this.viewportX/EnemySprite.WIDTH);
-
-	this.removeOldSprites(prevViewportSpriteX);
-	this.addNewSprites();
-};
-
-Enemies.prototype.checkViewportXBounds = function(viewportX) {
-	var maxViewportX = (this.sprites.length - Enemies.VIEWPORT_NUM_SPRITES) * 
-						EnemySprite.WIDTH;
-	if (viewportX < 0)
-	{
-		viewportX = 0;
-	}
-	else if (viewportX > maxViewportX)
-	{
-		viewportX = maxViewportX;
-	}
-
-	return viewportX;
-};
-
-Enemies.prototype.removeOldSprites = function(prevViewportSpriteX) {
-	var numOldSprites = this.viewportSpriteX - prevViewportSpriteX;
-	if (numOldSprites > Enemies.VIEWPORT_NUM_SPRITES)
-	{
-		numOldSprites = Enemies.VIEWPORT_NUM_SPRITES;
-	}
-
-	for (var i = prevViewportSpriteX; i < prevViewportSpriteX + numOldSprites; i++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite != null)
-		{
-			this.returnEnemySprite(newSprite.type, newSprite.sprite);
-			this.removeChild(newSprite.sprite);
-			newSprite.sprite = null;
+/*
+ *	This is the update loop to move all the Enemies.
+ */
+Enemies.prototype.update = function(currTime) {
+	for(var i = 0; i < this.MAX_ENEMIES; i++) {
+		if(this.sprites[i].sprite != null) {
+			if(this.sprites[i].destroy) {
+				
+				this.sprites[i].resetScale(); //need to reset the scale
+				this.removeOldSprite(i);
+			}
+			else {
+				this.sprites[i].update();
+			}
 		}
 	}
 };
 
-Enemies.prototype.addSprite = function(spriteType, y) {
-	var newSprite = new EnemySprite(spriteType, y);
+/*
+ *	Free an Enemies - returns it to the pool for reuse
+ */
+Enemies.prototype.removeOldSprite = function(index) {
+	this.returnEnemySprite(this.sprites[index].type, this.sprites[index].sprite);
+	this.removeChild(this.sprites[index].sprite);
+	this.sprites[index].sprite = null;
+}
+
+/*
+ *	This adds a new sprite - This method is used to draw a sprite
+ *		it is important to note you may not add more than the MAX_ENEMIES,
+ *		if it runs out you need to remove them.
+ *
+ * 	TODO: Patterns
+ */
+Enemies.prototype.addNewSprite = function(spriteType, pattern, scale) {
+	
+	//scan for open spot in the array to add our new enemy
+	for(var i = 0; i < this.MAX_ENEMIES; i++) {
+		if(this.sprites[i].sprite == null) {
+			var newSprite = this.sprites[i];
+			
+			newSprite.setSprite(this.borrowEnemySprite(spriteType), pattern, spriteType, scale);
+			
+			newSprite.type = spriteType;
+			
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
+};
+
+Enemies.prototype.addNewSpriteOverrideXAndY = function(spriteType, start_x, start_y, pattern, scale) {
+	//scan for open spot in the array to add our new enemy
+	for(var i = 0; i < this.MAX_ENEMIES; i++) {
+		if(this.sprites[i].sprite == null) {
+			var newSprite = this.sprites[i];
+			
+			newSprite.setSpriteOverrideXAndY(this.borrowEnemySprite(spriteType), start_x, start_y, pattern, spriteType, scale);
+			
+			newSprite.type = spriteType;
+			
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
+};
+
+Enemies.prototype.addSprite = function(spriteType) {
+	var newSprite = new EnemySprite(spriteType);
 	this.sprites.push(newSprite);
 };
 
-Enemies.prototype.addNewSprites = function() {
-	var firstX = -(this.viewportX % EnemySprite.WIDTH);
-	for (var i = this.viewportSpriteX, spriteIndex = 0;
-			 i < this.viewportSpriteX + Enemies.VIEWPORT_NUM_SPRITES;
-			 i++, spriteIndex++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite == null)
-		{
-			newSprite.sprite = this.borrowEnemySprite(newSprite.type);
-
-			newSprite.sprite.position.x = firstX + (spriteIndex * EnemySprite.WIDTH);
-			newSprite.sprite.position.y = newSprite.y;
-
-			this.addChild(newSprite.sprite);
-		}
-		else if (newSprite.sprite != null)
-		{
-			newSprite.sprite.position.x = firstX + (spriteIndex * EnemySprite.WIDTH);
-		}
-	}
-};
-
-Enemies.prototype.createLookupTables = function() {
-	// TODO: Change this to account for only one enemy type? Or add more enemy types.
-	this.borrowEnemySpriteLookup = [];
-	this.borrowEnemySpriteLookup[SpriteType.ENEMY] = this.pool.borrowEnemy;
-
-	this.returnEnemySpriteLookup = [];
-	this.returnEnemySpriteLookup[SpriteType.ENEMY] = this.pool.returnEnemy;
-};
-
 Enemies.prototype.borrowEnemySprite = function(spriteType) {
-	return this.borrowEnemySpriteLookup[spriteType].call(this.pool);
+	return this.pool.borrowEnemies();
 };
 
 Enemies.prototype.returnEnemySprite = function(spriteType, newSprite) {
-	return this.returnEnemySpriteLookup[spriteType].call(this.pool, newSprite);
+	return this.pool.returnEnemies(newSprite);
+};
+
+Enemies.prototype.addEnemiesToMap = function() {
+	for(var i = 0; i < this.MAX_ENEMIES; i++) {
+		this.addSprite()
+	}
 };

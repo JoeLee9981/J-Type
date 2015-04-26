@@ -12,9 +12,14 @@ gameover = false;
 var d = new Date();
 var startTime = d.getTime();
 
+//making this globally accessable so that enemy ships can shoot
+var stage;
+var bullets;
+
 function Main() {
 	
 	this.stage = new PIXI.Stage(0x66FF99);
+	stage = this.stage; //assign global
 	this.renderer = PIXI.autoDetectRenderer(
 		800,
 		600,

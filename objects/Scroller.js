@@ -51,11 +51,11 @@
 	stage.addChild(this.powerUps);
 	
 	this.bullets = new Bullets();
+	bullets = this.bullets; //assign global for access
 	stage.addChild(this.bullets);
 	
 	this.explosions = new Explosions();
 	stage.addChild(this.explosions);
-	this.explosions.addNewSprite(200, 200, 1, ExplosionSprite.NORMAL);
 	
 	var ship = PIXI.Sprite.fromFrame("resources/KB_ship.png");
 	this.player_ship = new PlayerShipSprite(ship);
@@ -119,11 +119,12 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	}
 	if(currTime - this.last > 1000) {
 		this.asteroids.addNewSprite(Math.floor(Math.random() * 3), Math.floor(Math.random() * 4));
+		this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_1, .4);
+		this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_2, .4);
 		this.last = currTime;
 	}
 	else if(currTime - this.lastBullet > 300 && firing) {
 		this.bullets.addNewProtagSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY());
-		this.bullets.addNewEnemySprite(800, 300);
 		this.lastBullet = currTime;
 	}
 	else if(currTime - this.lastCollisionCheck > 100) {
@@ -133,6 +134,7 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	this.bullets.update();
 	this.asteroids.update(currTime);
 	this.explosions.update(currTime);
+	this.enemies.update(currTime);
 
 	this.setViewportX(newViewportX);
 	
@@ -145,10 +147,10 @@ Scroller.prototype.updateHealth = function() {
 };
 
 Scroller.prototype.destroyPlayerShip = function() {
-	this.explosions.addNewSprite(this.player_ship.sprite.position.x, this.player_ship.sprite.position.y, 1, ExplosionSprite.NORMAL);
-	this.stage.removeChild(this.player_ship.sprite);
-	gameover = true;
-	this.gameoverTime = new Date().getTime();
+	//this.explosions.addNewSprite(this.player_ship.sprite.position.x, this.player_ship.sprite.position.y, 1, ExplosionSprite.NORMAL);
+	//this.stage.removeChild(this.player_ship.sprite);
+	//gameover = true;
+	//this.gameoverTime = new Date().getTime();
 	
 
 	
@@ -239,6 +241,7 @@ Scroller.prototype.checkCollision = function() {
 					
 					bullet.destroy = true;
 					this.explosions.addNewSprite(bullet.getCenterX() + 10, bullet.getCenterY(), .25, ExplosionSprite.FAST);
+					break; //bullet is destroyed, no longer allowed to collide with other objects
 				}
 			}
 		}

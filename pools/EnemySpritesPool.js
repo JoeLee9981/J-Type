@@ -13,9 +13,7 @@ EnemySpritesPool.prototype.returnEnemies = function(sprite) {
 EnemySpritesPool.prototype.createEnemies = function() {
 	this.enemies = [];
 
-	// TODO: Add correct number of sprites. Change spriteID.
-	this.addEnemySprites(6, "window_01");
-	this.addEnemySprites(6, "window_02");
+	this.addEnemySprites(10, "resources/KB_EnemyBabyShip.png");
 
 	this.shuffle(this.enemies);
 };
