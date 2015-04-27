@@ -50,8 +50,7 @@ PowerUpSpritesPool.prototype.createShootPowerUps = function() {
 	this.shootPowerUps = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addShootPowerUpSprites(6, "window_01");
-	this.addShootPowerUpSprites(6, "window_02");
+	this.addShootPowerUpSprites(6, "resources/KB_PowerUps_Shooting.png");
 
 	this.shuffle(this.shootPowerUps);
 };
@@ -60,9 +59,7 @@ PowerUpSpritesPool.prototype.createSpeedPowerUps = function() {
 	this.speedPowerUps = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addSpeedPowerUpSprites(6, "decoration_01");
-	this.addSpeedPowerUpSprites(6, "decoration_02");
-	this.addSpeedPowerUpSprites(6, "decoration_03");
+	this.addSpeedPowerUpSprites(6, "resources/KB_PowerUps_Speed.png");
 
 	this.shuffle(this.speedPowerUps);
 };
@@ -71,8 +68,7 @@ PowerUpSpritesPool.prototype.createHealthPowerUps = function() {
 	this.healthPowerUps = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addHealthPowerUpSprites(2, "edge_01");
-	this.addHealthPowerUpSprites(2, "edge_02");
+	this.addHealthPowerUpSprites(2, "resources/KB_PowerUps_Health.png");
 
 	this.shuffle(this.healthPowerUps);
 };
@@ -81,8 +77,7 @@ PowerUpSpritesPool.prototype.createBombPowerUps = function() {
 	this.bombPowerUps = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addBombPowerUpSprites(2, "edge_01");
-	this.addBombPowerUpSprites(2, "edge_02");
+	this.addBombPowerUpSprites(2, "resources/KB_PowerUps_Bomb.png");
 
 	this.shuffle(this.bombPowerUps);
 };
@@ -91,7 +86,7 @@ PowerUpSpritesPool.prototype.createExtraLifePowerUps = function() {
 	this.extraLifePowerUps = [];
 	
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addExtraLifePowerUpSprites(2, "step_01");
+	this.addExtraLifePowerUpSprites(2, "resources/KB_PowerUps_ExtraLife.png");
 };
 
 PowerUpSpritesPool.prototype.addShootPowerUpSprites = function(amount, frameId) {

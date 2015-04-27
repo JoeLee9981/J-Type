@@ -87,18 +87,18 @@ PowerUps.prototype.addNewSprites = function() {
 
 PowerUps.prototype.createLookupTables = function() {
 	this.borrowPowerUpSpriteLookup = [];
-	this.borrowPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.borrowShootPowerUp;
-	this.borrowPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.borrowSpeedPowerUp;
-	this.borrowPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.borrowHealthPowerUp;
-	this.borrowPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.borrowBombPowerUp;
-	this.borrowPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.borrowExtraLifePowerUp;
+	this.borrowPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.borrowShootPowerUps;
+	this.borrowPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.borrowSpeedPowerUps;
+	this.borrowPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.borrowHealthPowerUps;
+	this.borrowPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.borrowBombPowerUps;
+	this.borrowPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.borrowExtraLifePowerUps;
 
 	this.returnPowerUpSpriteLookup = [];
-	this.returnPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.returnShootPowerUp;
-	this.returnPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.returnSpeedPowerUp;
-	this.returnPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.returnHealthPowerUp;
-	this.returnPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.returnBombPowerUp;
-	this.returnPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.returnExtraLifePowerUp;
+	this.returnPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.returnShootPowerUps;
+	this.returnPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.returnSpeedPowerUps;
+	this.returnPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.returnHealthPowerUps;
+	this.returnPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.returnBombPowerUps;
+	this.returnPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.returnExtraLifePowerUps;
 };
 
 PowerUps.prototype.borrowPowerUpSprite = function(spriteType) {

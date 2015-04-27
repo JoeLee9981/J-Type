@@ -46,8 +46,7 @@ Main.prototype.update = function() {
 
 Main.prototype.loadSpriteSheet = function() {
 	var assetsToLoad = [ "resources/jtype-bg-far.png", "resources/jtype-bg-mid.png",
-						 "resources/wall.json", "resources/jtype-bg-near.png", "resources/spritesheet.json", 
-						 "resources/bg-far.png", "resources/bg-mid.png", 
+						 "resources/jtype-bg-near.png", "resources/KB_Laserbullets_Red.png",
 						 "resources/KB_BigAsteroid.png", "resources/KB_MidAsteroid.png",
 						 "resources/KB_lilAsteroid.png", "resources/KB_EnemyBabyShip.png",
 						 "resources/KB_EnemyMotherShip.png", "resources/KB_ship.png",
@@ -57,8 +56,7 @@ Main.prototype.loadSpriteSheet = function() {
 						 "resources/KB_Explosion_frame1.png", "resources/KB_Explosion_frame2.png",
 						 "resources/KB_Explosion_frame3.png", "resources/KB_Explosion_frame4.png",
 						 "resources/KB_Explosion_frame5.png", "resources/KB_Laserbomb_Aqua.png",
-						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png",
-						 "resources/KB_Laserbullets_Red.png"];
+						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png" ];
 	loader = new PIXI.AssetLoader(assetsToLoad);
 	loader.onComplete = this.spriteSheetLoaded.bind(this);
 	loader.load();

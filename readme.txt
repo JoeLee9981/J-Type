@@ -21,3 +21,4 @@ Run locally in Firefox.
 		
 --- Additional Information ---
 	Tutorial: http://www.yeahbutisitflash.com/?p=5226
+	Background Brushes: http://gimpbrush.com/
