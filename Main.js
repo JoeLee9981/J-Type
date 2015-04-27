@@ -8,17 +8,16 @@ debug = true;
 playing = true;
 gameover = false;
 
-//Timer
-var d = new Date();
-var startTime = d.getTime();
+interactive = true;
 
 //making this globally accessable so that enemy ships can shoot
 var stage;
 var bullets;
+var scroller;
 
 function Main() {
 	
-	this.stage = new PIXI.Stage(0x66FF99);
+	this.stage = new PIXI.Stage(0x1D163B, interactive);
 	stage = this.stage; //assign global
 	this.renderer = PIXI.autoDetectRenderer(
 		800,
@@ -39,7 +38,6 @@ Main.prototype.update = function() {
 		
 		this.scroller.moveViewportXBy(now, Main.SCROLL_SPEED);
 		this.renderer.render(this.stage);
-		this.updateTimer();
 	}
 	requestAnimFrame(this.update.bind(this));
 };
@@ -56,7 +54,9 @@ Main.prototype.loadSpriteSheet = function() {
 						 "resources/KB_Explosion_frame1.png", "resources/KB_Explosion_frame2.png",
 						 "resources/KB_Explosion_frame3.png", "resources/KB_Explosion_frame4.png",
 						 "resources/KB_Explosion_frame5.png", "resources/KB_Laserbomb_Aqua.png",
-						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png" ];
+						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png",
+						 "resources/credits.png", "resources/jtype_logo.png",
+						 "resources/play_button.png", "resources/scores_button.png" ];
 	loader = new PIXI.AssetLoader(assetsToLoad);
 	loader.onComplete = this.spriteSheetLoaded.bind(this);
 	loader.load();
@@ -64,36 +64,11 @@ Main.prototype.loadSpriteSheet = function() {
 
 Main.prototype.spriteSheetLoaded = function() {
 	this.scroller = new Scroller(this.stage);	
-	
-	var timerText = new PIXI.Text("Time: 00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
-	this.timeLabel = timerText;
-	timerText.position.x = 650;
-	timerText.position.y = 10;
-	this.stage.addChild(timerText);
+	scroller = this.scroller;
 	
 	requestAnimFrame(this.update.bind(this));
 
 };
-
-
-Main.prototype.updateTimer = function() {
-	var d = new Date();
-	var currTime = d.getTime();
-	var elapsed = currTime - startTime;
-	var seconds = parseInt((elapsed / 1000) % 60);
-	var minutes = parseInt((elapsed / (1000 * 60)) % 60);
-	var hours = parseInt((elapsed / (1000 * 3600)) % 24);
-	
-	if(seconds < 10)
-		seconds = '0' + seconds;
-	if(minutes < 10)
-		minutes = '0' + minutes;
-	if(hours < 10)
-		hours = '0' + hours;
-	
-	this.timeLabel.setText("Time: " + hours + ":" + minutes + ":" + seconds);
-}
-
 
 /******************** Key Event Handlers ********************/
 

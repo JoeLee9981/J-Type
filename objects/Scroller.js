@@ -1,4 +1,7 @@
-﻿function Scroller(stage) {
+﻿//Timer
+var startTime;
+
+function Scroller(stage) {
 	
 	this.stage = stage;
 	
@@ -42,53 +45,134 @@
 	
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
-	stage.addChild(this.asteroids);
 	
 	this.enemies = new Enemies();
-	stage.addChild(this.enemies);
 	
 	this.powerUps = new PowerUps();
-	stage.addChild(this.powerUps);
 	
 	this.bullets = new Bullets();
 	bullets = this.bullets; //assign global for access
-	stage.addChild(this.bullets);
 	
 	this.explosions = new Explosions();
-	stage.addChild(this.explosions);
 	
 	var ship = PIXI.Sprite.fromFrame("resources/KB_ship.png");
 	this.player_ship = new PlayerShipSprite(ship);
 	this.player_ship.sprite.position.x = 100;
 	this.player_ship.sprite.position.y = 100;
+	
+	//creates the bounding box of the hitbox for a player ship
+	if(debug) {
+		this.graphics = new PIXI.Graphics();
+		this.player_sails_box = this.graphics;
+		this.graphics.lineStyle(1, 0xFF0000);
+		this.graphics.drawRect(0, 0, this.player_ship.getSailsWidth(), this.player_ship.getSailsHeight());
+		
+		this.graphics2 = new PIXI.Graphics();
+		this.player_body_box = this.graphics2;
+		this.graphics2.lineStyle(1, 0xFF0000);
+		this.graphics2.drawRect(0, 0, this.player_ship.getBodyWidth(), this.player_ship.getBodyHeight());
+	}
+
+	this.healthText = new PIXI.Text("Health: 1000 / 1000", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.healthLabel = this.healthText;
+	this.healthText.position.x = 10;
+	this.healthText.position.y = 10;
+
+	this.viewportX = 0;
+	this.last = 0; //last saved time used to deteryyine when to draw new objects
+	this.lastBullet = 0;
+	this.lastCollisionCheck = 0; //used to restrict collision checks to a time frame
+	
+	this.displayTitleScreen();
+}
+
+Scroller.prototype.beginGame = function() {
+	// Remove old sprites
+	stage.removeChild(this.jTypeLogo);
+	stage.removeChild(this.jTypeCredits);
+	stage.removeChild(this.playButton);
+	stage.removeChild(this.scoresButton);
+
+	// Interactive Sprites
+	stage.addChild(this.asteroids);
+	stage.addChild(this.enemies);
+	stage.addChild(this.powerUps);
+	stage.addChild(this.bullets);
+	stage.addChild(this.explosions);
 	stage.addChild(this.player_ship.sprite);
 	
 	//creates the bounding box of the hitbox for a player ship
 	if(debug) {
-		var graphics = new PIXI.Graphics();
-		this.player_sails_box = graphics;
-		graphics.lineStyle(1, 0xFF0000);
-		graphics.drawRect(0, 0, this.player_ship.getSailsWidth(), this.player_ship.getSailsHeight());
-		stage.addChild(graphics);
-		
-		var graphics2 = new PIXI.Graphics();
-		this.player_body_box = graphics2;
-		graphics2.lineStyle(1, 0xFF0000);
-		graphics2.drawRect(0, 0, this.player_ship.getBodyWidth(), this.player_ship.getBodyHeight());
-		stage.addChild(graphics2);
+		stage.addChild(this.graphics);		
+		stage.addChild(this.graphics2);
+	}
+	
+	stage.addChild(this.healthText);
+	
+	this.startTimer();
+};
+
+Scroller.prototype.displayTitleScreen = function() {
+	// Display logo.
+	this.jTypeLogo = PIXI.Sprite.fromImage("resources/jtype_logo.png");
+	stage.addChild(this.jTypeLogo);
+	this.jTypeLogo.position.x = 20;
+	this.jTypeLogo.position.y = 0;
+
+	// Display credits.
+	this.jTypeCredits = PIXI.Sprite.fromImage("resources/credits.png");
+	stage.addChild(this.jTypeCredits);
+	this.jTypeCredits.position.x = 0;
+	this.jTypeCredits.position.y = 500;
+	
+	/* Button tutorial code: http://www.goodboydigital.com/pixijs/examples/6/ */
+	
+	// Display and set "play" button.
+	var playTexture = PIXI.Texture.fromImage("resources/play_button.png");
+	var playTextureHover = PIXI.Texture.fromImage("resources/play_button_hover.png");
+	this.playButton = new PIXI.Sprite(playTexture);	
+	this.playButton.position.x = 200;
+	this.playButton.position.y = 300;
+	this.playButton.interactive = true;
+	
+	// Set click/touch and mouseover/out callbacks.
+	this.playButton.mouseup = this.playButton.touchend = function(data){		
+		scroller.beginGame();
 	}
 
-	var healthText = new PIXI.Text("Health: 1000 / 1000", {font: " bold 20px Snippet", fill: "white", align: "right"});
-	this.healthLabel = healthText;
-	healthText.position.x = 10;
-	healthText.position.y = 10;
-	stage.addChild(healthText);
+	this.playButton.mouseover = function(data){
+		this.setTexture(playTextureHover);
+	}
+	
+	this.playButton.mouseout = function(data){
+		this.setTexture(playTexture)
+	}
+	
+	stage.addChild(this.playButton);
+	
+	// Display and set "scores" button.	
+	var scoresTexture = PIXI.Texture.fromImage("resources/scores_button.png");
+	var scoresTextureHover = PIXI.Texture.fromImage("resources/scores_button_hover.png");
+	this.scoresButton = new PIXI.Sprite(scoresTexture);	
+	this.scoresButton.position.x = 200;
+	this.scoresButton.position.y = 400;
+	this.scoresButton.interactive = true;
+	
+	// Set click/touch and mouseover/out callbacks.
+	this.scoresButton.mouseup = this.scoresButton.touchend = function(data){
+		var win = window.open("scores.html", '_blank');
+	}
 
-	this.viewportX = 0;
-	this.last = 0; //last saved time used to determine when to draw new objects
-	this.lastBullet = 0;
-	this.lastCollisionCheck = 0; //used to restrict collision checks to a time frame
-}
+	this.scoresButton.mouseover = function(data){		
+		this.setTexture(scoresTextureHover);
+	}
+	
+	this.scoresButton.mouseout = function(data){
+		this.setTexture(scoresTexture)
+	}
+	
+	stage.addChild(this.scoresButton);
+};
 
 Scroller.prototype.setViewportX = function(viewportX) {
 	this.viewportX = viewportX;
@@ -102,7 +186,9 @@ Scroller.prototype.getViewportX = function() {
 };
 
 Scroller.prototype.moveViewportXBy = function(currTime, units) {
-	
+	if(this.timeLabel)
+		this.updateTimer();
+
 	if(gameover && currTime - this.gameoverTime > 500) {
 		playing = false;
 	}
@@ -246,5 +332,33 @@ Scroller.prototype.checkCollision = function() {
 			}
 		}
 	}
-}
+};
+
+Scroller.prototype.startTimer = function() {	
+	var timerText = new PIXI.Text("Time: 00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.timeLabel = timerText;
+	timerText.position.x = 650;
+	timerText.position.y = 10;
+	this.stage.addChild(timerText);
+	
+	startTime = new Date().getTime();
+};
+
+Scroller.prototype.updateTimer = function() {
+	var d = new Date();
+	var currTime = d.getTime();
+	var elapsed = currTime - startTime;
+	var seconds = parseInt((elapsed / 1000) % 60);
+	var minutes = parseInt((elapsed / (1000 * 60)) % 60);
+	var hours = parseInt((elapsed / (1000 * 3600)) % 24);
+	
+	if(seconds < 10)
+		seconds = '0' + seconds;
+	if(minutes < 10)
+		minutes = '0' + minutes;
+	if(hours < 10)
+		hours = '0' + hours;
+	
+	this.timeLabel.setText("Time: " + hours + ":" + minutes + ":" + seconds);
+};
 
