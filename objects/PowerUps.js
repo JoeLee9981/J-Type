@@ -2,109 +2,86 @@ function PowerUps() {
 	PIXI.DisplayObjectContainer.call(this);
 
 	this.pool = new PowerUpSpritesPool();
-	this.createLookupTables();
 
 	this.sprites = [];
-
-	this.viewportX = 0;
-	this.viewportSpriteX = 0;
+	this.MAX_POWERUPS = 6;
+	this.addPowerUpsToMap();
 }
 
 PowerUps.constructor = PowerUps;
 PowerUps.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-PowerUps.VIEWPORT_WIDTH = 800;
-PowerUps.VIEWPORT_NUM_SPRITES = Math.ceil(PowerUps.VIEWPORT_WIDTH/PowerUpSprite.WIDTH) + 1;
-
-PowerUps.prototype.setViewportX = function(viewportX) {
-	this.viewportX = this.checkViewportXBounds(viewportX);
-
-	var prevViewportSpriteX = this.viewportSpriteX;
-	this.viewportSpriteX = Math.floor(this.viewportX/PowerUpSprite.WIDTH);
-
-	this.removeOldSprites(prevViewportSpriteX);
-	this.addNewSprites();
-};
-
-PowerUps.prototype.checkViewportXBounds = function(viewportX) {
-	var maxViewportX = (this.sprites.length - PowerUps.VIEWPORT_NUM_SPRITES) * 
-						PowerUpSprite.WIDTH;
-	if (viewportX < 0) {
-		viewportX = 0;
-	} else if (viewportX > maxViewportX) {
-		viewportX = maxViewportX;
-	}
-
-	return viewportX;
-};
-
-PowerUps.prototype.removeOldSprites = function(prevViewportSpriteX) {
-	var numOldSprites = this.viewportSpriteX - prevViewportSpriteX;
-	
-	if (numOldSprites > PowerUps.VIEWPORT_NUM_SPRITES) {
-		numOldSprites = PowerUps.VIEWPORT_NUM_SPRITES;
-	}
-
-	for (var i = prevViewportSpriteX; i < prevViewportSpriteX + numOldSprites; i++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite != null) {
-			this.returnPowerUpSprite(newSprite.type, newSprite.sprite);
-			this.removeChild(newSprite.sprite);
-			newSprite.sprite = null;
-		}
-	}
-};
-
-PowerUps.prototype.addSprite = function(spriteType, y) {
-	var newSprite = new PowerUpSprite(spriteType, y);
+PowerUps.prototype.addSprite = function() {
+	var newSprite = new PowerUpSprite();
 	this.sprites.push(newSprite);
 };
 
-PowerUps.prototype.addNewSprites = function() {
-	var firstX = -(this.viewportX % PowerUpSprite.WIDTH);
-	
-	for (var i = this.viewportSpriteX, spriteIndex = 0;
-			 i < this.viewportSpriteX + PowerUps.VIEWPORT_NUM_SPRITES;
-			 i++, spriteIndex++)
-	{
-		var newSprite = this.sprites[i];
-		if (newSprite.sprite == null)
-		{
-			newSprite.sprite = this.borrowPowerUpSprite(newSprite.type);
-
-			newSprite.sprite.position.x = firstX + (spriteIndex * PowerUpSprite.WIDTH);
-			newSprite.sprite.position.y = newSprite.y;
-
-			this.addChild(newSprite.sprite);
-		}
-		else if (newSprite.sprite != null)
-		{
-			newSprite.sprite.position.x = firstX + (spriteIndex * PowerUpSprite.WIDTH);
+/*
+ *	This is the update loop to update all the asteroids.
+ */
+PowerUps.prototype.update = function() {
+	for(var i = 0; i < this.MAX_POWERUPS; i++) {
+		if(this.sprites[i].sprite != null) {
+			if(this.sprites[i].destroy) {
+				
+				this.removeOldSprite(i);
+			}
+			else {
+				this.sprites[i].update();
+			}
 		}
 	}
 };
 
-PowerUps.prototype.createLookupTables = function() {
-	this.borrowPowerUpSpriteLookup = [];
-	this.borrowPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.borrowShootPowerUps;
-	this.borrowPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.borrowSpeedPowerUps;
-	this.borrowPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.borrowHealthPowerUps;
-	this.borrowPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.borrowBombPowerUps;
-	this.borrowPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.borrowExtraLifePowerUps;
-
-	this.returnPowerUpSpriteLookup = [];
-	this.returnPowerUpSpriteLookup[SpriteType.SHOOT_POWERUP] = this.pool.returnShootPowerUps;
-	this.returnPowerUpSpriteLookup[SpriteType.SPEED_POWERUP] = this.pool.returnSpeedPowerUps;
-	this.returnPowerUpSpriteLookup[SpriteType.HEALTH_POWERUP] = this.pool.returnHealthPowerUps;
-	this.returnPowerUpSpriteLookup[SpriteType.BOMB_POWERUP] = this.pool.returnBombPowerUps;
-	this.returnPowerUpSpriteLookup[SpriteType.EXTRA_LIFE_POWERUP] = this.pool.returnExtraLifePowerUps;
+/*
+ *	Free an asteroid - returns it to the pool for reuse
+ */
+PowerUps.prototype.removeOldSprite = function(index) {
+	this.returnPowerUpSprite(this.sprites[index].sprite);
+	this.removeChild(this.sprites[index].sprite);
+	this.sprites[index].sprite = null;
 };
 
-PowerUps.prototype.borrowPowerUpSprite = function(spriteType) {
-	return this.borrowPowerUpSpriteLookup[spriteType].call(this.pool);
+/*
+ *	This adds a new sprite - This method is used to draw a sprite
+ *		it is important to note you may not add more than the MAX_POWERUPS,
+ *		if it runs out you need to remove them.
+ *
+ */
+PowerUps.prototype.addNewSprite = function(spriteType, start_x, start_y) {
+	
+	//scan for open spot in the array to add our new asteroid
+	for(var i = 0; i < this.MAX_POWERUPS; i++) {
+		if(this.sprites[i].sprite == null) {
+			var newSprite = this.sprites[i];
+			
+			newSprite.setSprite(this.borrowPowerUpSprite(spriteType), spriteType);
+			newSprite.sprite.position.x = start_x;
+			newSprite.sprite.position.y = start_y;
+			
+			newSprite.type = spriteType;
+			
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
 };
 
-PowerUps.prototype.returnPowerUpSprite = function(spriteType, newSprite) {
-	return this.returnPowerUpSpriteLookup[spriteType].call(this.pool, newSprite);
+PowerUps.prototype.borrowPowerUpSprite = function() {
+	return this.pool.borrowPowerUps();
 };
+
+PowerUps.prototype.returnPowerUpSprite = function(newSprite) {
+	return this.pool.returnPowerUps(newSprite);
+};
+
+/*
+ *	This is used to map powerups into the pool
+ */
+PowerUps.prototype.addPowerUpsToMap = function() {
+	console.log("Adding powerups to map");
+	for(var i = 0; i < this.MAX_POWERUPS; i++) {
+		this.addSprite();	
+	}
+};
+

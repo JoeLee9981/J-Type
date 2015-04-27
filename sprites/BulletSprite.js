@@ -3,6 +3,8 @@ function BulletSprite(type) {
 	this.sprite = null;
 	this.speed = 12;
 	this.destroy = false;
+	this.power = 100; //default power for a bullet
+	this.scale = 1;
 }
 
 BulletSprite.ENEMY_BULLET = 0;
@@ -24,11 +26,39 @@ BulletSprite.prototype.update = function() {
 		if(this.sprite.position.x < 0)
 			this.destroy = true;
 	}
+	
+	if(debug && this.bounding_box) {
+		this.bounding_box.position.x = this.sprite.position.x;
+		this.bounding_box.position.y = this.sprite.position.y;
+	}
+};
+
+BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale) {
+	this.sprite = sprite;
+	this.scale = scale;
+	this.sprite.width *= scale;
+	this.sprite.height *= scale;
+	this.sprite.position.x = start_x;
+	this.sprite.position.y = start_y;
+	
+	if(debug) {
+		var graphics = new PIXI.Graphics();
+		this.bounding_box = graphics;
+		graphics.lineStyle(1, 0x00FF00);
+		graphics.drawRect(0, 0, this.sprite.width, this.sprite.height);
+		stage.addChild(graphics);
+	}
 };
 
 BulletSprite.prototype.reset = function() {
 	this.destroy = false;
-	this.sprite = null;
+	
+	if(this.sprite != null) {
+		this.sprite.width /= this.scale;
+		this.sprite.height /= this.scale;
+		this.sprite = null;
+	}
+	this.scale = 1;
 };
 
 BulletSprite.prototype.getCenterX = function() {

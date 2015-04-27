@@ -69,6 +69,9 @@ Bullets.prototype.removeOldProtagSprite = function(index) {
 	this.returnBulletSprite(this.protagSprites[index].type, this.protagSprites[index].sprite);
 	this.removeChild(this.protagSprites[index].sprite);
 	this.protagSprites[index].reset();
+	if(debug) {
+		stage.removeChild(this.protagSprites[index].bounding_box);
+	}
 }
 
 Bullets.prototype.removeOldEnemySprite = function(index) {
@@ -76,6 +79,9 @@ Bullets.prototype.removeOldEnemySprite = function(index) {
 	this.removeChild(this.enemySprites[index].sprite);
 	this.enemySprites[index].sprite = null;
 	this.enemySprites[index].reset();
+	if(debug) {
+		stage.removeChild(this.enemySprites[index].bounding_box);
+	}
 }
 
 Bullets.prototype.addProtagSprite = function() {
@@ -111,15 +117,13 @@ Bullets.prototype.addNewSprites = function() {
 	}
 };
 
-Bullets.prototype.addNewProtagSprite = function(start_x, start_y) {
+Bullets.prototype.addNewProtagSprite = function(start_x, start_y, scale) {
 	//scan for open spot in the array to add our new asteroid
 	for(var i = 0; i < this.MAX_BULLETS; i++) {
 		if(this.protagSprites[i].sprite == null) {
 			var newSprite = this.protagSprites[i];
 			
-			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
-			newSprite.sprite.position.x = start_x;
-			newSprite.sprite.position.y = start_y;
+			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale);
 			
 			this.addChild(newSprite.sprite);
 			break;
@@ -127,17 +131,22 @@ Bullets.prototype.addNewProtagSprite = function(start_x, start_y) {
 	}
 };
 
-Bullets.prototype.addNewEnemySprite = function(start_x, start_y) {
+Bullets.prototype.addNewEnemySprite = function(start_x, start_y, scale) {
 	//scan for open spot in the array to add our new asteroid
 	for(var i = 0; i < this.MAX_BULLETS; i++) {
 		if(this.enemySprites[i].sprite == null) {
 			var newSprite = this.enemySprites[i];
 			
-			newSprite.sprite = this.borrowBulletSprite(newSprite.type);
-			newSprite.sprite.rotation =  Math.PI;
+			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale);
+			//anchor in the center to rotate
+			newSprite.sprite.anchor.x = .5;
+			newSprite.sprite.anchor.y = .5;
 
-			newSprite.sprite.position.x = start_x;
-			newSprite.sprite.position.y = start_y;
+			newSprite.sprite.rotation =  Math.PI;
+			//set the anchor to the new x, y
+			newSprite.sprite.anchor.x = 1;
+			newSprite.sprite.anchor.y = 1;
+
 			this.addChild(newSprite.sprite);
 			break;
 		}

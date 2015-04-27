@@ -13,7 +13,7 @@ EnemySpritesPool.prototype.returnEnemies = function(sprite) {
 EnemySpritesPool.prototype.createEnemies = function() {
 	this.enemies = [];
 
-	this.addEnemySprites(10, "resources/KB_EnemyBabyShip.png");
+	this.addEnemySprites(20, "resources/KB_EnemyBabyShip.png");
 
 	this.shuffle(this.enemies);
 };

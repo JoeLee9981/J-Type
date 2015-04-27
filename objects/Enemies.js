@@ -3,7 +3,7 @@ function Enemies() {
 
 	this.pool = new EnemySpritesPool();
 
-	this.MAX_ENEMIES = 10;
+	this.MAX_ENEMIES = 20;
 
 	this.sprites = [];
 	this.addEnemiesToMap();
@@ -27,7 +27,7 @@ Enemies.prototype.update = function(currTime) {
 				this.removeOldSprite(i);
 			}
 			else {
-				this.sprites[i].update();
+				this.sprites[i].update(currTime);
 			}
 		}
 	}
@@ -40,6 +40,8 @@ Enemies.prototype.removeOldSprite = function(index) {
 	this.returnEnemySprite(this.sprites[index].type, this.sprites[index].sprite);
 	this.removeChild(this.sprites[index].sprite);
 	this.sprites[index].sprite = null;
+	if(debug)
+		stage.removeChild(this.sprites[index].bounding_box);
 }
 
 /*

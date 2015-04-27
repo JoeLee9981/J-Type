@@ -4,9 +4,12 @@ function PlayerShipSprite(sprite) {
 	this.sprite = sprite;
 	this.sprite.width = this.sprite.width / 2;
 	this.sprite.height = this.sprite.height / 2;
+	this.invulnerable = false;
 	
 	//power settings of the weapons, increase this when a powerup is picked up
 	this.power = 100;
+	//power up will make bullets slightly bigger
+	this.bulletScale = 1;
 	//speed settings for ship, increase this when a powerup is picked up
 	this.speed = 3;
 	//damage inclicted by ships hull when colliding
@@ -63,42 +66,71 @@ PlayerShipSprite.prototype.damage = function(damage) {
 	return 1;
 }
 
-this.PlayerShipSprite.prototype.getSailsX = function() {
+PlayerShipSprite.prototype.checkCollision = function(x, y, width, height) {
+	
+	if(this.invulnerable)
+		return false;
+	
+	var sailsX = this.getSailsX();
+	var sailsY = this.getSailsY();
+	var sailsWidth = this.getSailsWidth();
+	var sailsHeight = this.getSailsHeight();
+	var sails = !(sailsX > (x + width) || (sailsX + sailsWidth) < x || sailsY > (y + height) || (sailsY + sailsHeight) < y);
+	
+	var bodyX = this.getBodyX();
+	var bodyY = this.getBodyY();
+	var bodyWidth = this.getBodyWidth();
+	var bodyHeight = this.getBodyHeight();
+	var body = !(bodyX > (x + width) || (bodyX + bodyWidth) < x || bodyY > (y + height) || (bodyY + bodyHeight) < y);
+	
+	return sails || body;
+}
+
+PlayerShipSprite.prototype.shootPowerUp = function() {
+	if(this.power < 500) {
+		this.power += 100;
+		this.bulletScale += .1
+	}
+	
+}
+
+
+PlayerShipSprite.prototype.getSailsX = function() {
 	return this.sprite.position.x + this.sprite.width / 2.5;
 }
 
-this.PlayerShipSprite.prototype.getSailsY = function() {
+PlayerShipSprite.prototype.getSailsY = function() {
 	return this.sprite.position.y + this.sprite.height / 5;
 }
 
-this.PlayerShipSprite.prototype.getSailsWidth = function() {
+PlayerShipSprite.prototype.getSailsWidth = function() {
 	return this.sprite.width / 3.5;
 }
 
-this.PlayerShipSprite.prototype.getSailsHeight = function() {
+PlayerShipSprite.prototype.getSailsHeight = function() {
 	return this.sprite.width / 4;
 }
 
-this.PlayerShipSprite.prototype.getBodyX = function() {
+PlayerShipSprite.prototype.getBodyX = function() {
 	return this.sprite.position.x + this.sprite.width / 4;
 }
 
-this.PlayerShipSprite.prototype.getBodyY = function() {
+PlayerShipSprite.prototype.getBodyY = function() {
 	return this.sprite.position.y + this.sprite.height / 5 + this.getSailsHeight();
 }
 
-this.PlayerShipSprite.prototype.getBodyWidth = function() {
+PlayerShipSprite.prototype.getBodyWidth = function() {
 	return this.sprite.width / 2.25;
 }
 
-this.PlayerShipSprite.prototype.getBodyHeight = function() {
+PlayerShipSprite.prototype.getBodyHeight = function() {
 	return this.sprite.width / 5;
 }
 
-this.PlayerShipSprite.prototype.getCenterX = function() {
+PlayerShipSprite.prototype.getCenterX = function() {
 	return this.sprite.position.x + (this.sprite.width / 2);
 }
 
-this.PlayerShipSprite.prototype.getCenterY = function() {
+PlayerShipSprite.prototype.getCenterY = function() {
 	return this.sprite.position.y + (this.sprite.height / 2);
 } 
