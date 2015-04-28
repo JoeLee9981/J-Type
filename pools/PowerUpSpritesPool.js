@@ -14,7 +14,7 @@ PowerUpSpritesPool.prototype.createPowerUps = function() {
 	this.powerUps = [];
 
 	// TODO: Add correct number of sprites. Change spriteID.
-	this.addPowerUpSprites(6, "resources/KB_PowerUps_Shooting.png");
+	this.addPowerUpSprites(20, "resources/KB_PowerUps_Shooting.png");
 
 };
 

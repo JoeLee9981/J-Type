@@ -4,7 +4,7 @@ function PowerUps() {
 	this.pool = new PowerUpSpritesPool();
 
 	this.sprites = [];
-	this.MAX_POWERUPS = 6;
+	this.MAX_POWERUPS = 20;
 	this.addPowerUpsToMap();
 }
 

@@ -34,6 +34,8 @@ function PlayerShipSprite(sprite) {
 	this.powerUp = 1;
 	//health power up
 	this.healthUp = 0;
+	//speed powerups
+	this.speedUp = 1;
 	
 	this.frame = 0;
 	this.last = 0;
@@ -48,10 +50,10 @@ PlayerShipSprite.prototype.update = function(now, vx, vy) {
 		this.sprite.position.x = 800 - this.sprite.width;
 	if(this.sprite.position.x < 0)
 		this.sprite.position.x = 0;
-	if(this.sprite.position.y < 0)
-		this.sprite.position.y = 0;
-	else if(this.sprite.position.y + this.sprite.height > 600)
-		this.sprite.position.y = 600 - this.sprite.height;
+	if(this.sprite.position.y < 35)
+		this.sprite.position.y = 35;
+	else if(this.sprite.position.y + this.sprite.height > 565)
+		this.sprite.position.y = 565 - this.sprite.height;
 	
 	//this is to flicker the flames
 	if(vx > 0 && this.frame == 0) {
@@ -117,6 +119,7 @@ PlayerShipSprite.prototype.shootPowerUp = function() {
 PlayerShipSprite.prototype.speedPowerUp = function() {
 	if(this.speed < 4) {
 		this.speed += .25;
+		this.speedUp++;
 	}
 };
 
@@ -170,6 +173,8 @@ PlayerShipSprite.prototype.reset = function() {
 	this.powerUp = 1;
 	//health powerups
 	this.healthUp = 0;
+	//speed powerups
+	this.speedUp = 1;
 	
 	this.frame = 0;
 	this.last = 0;

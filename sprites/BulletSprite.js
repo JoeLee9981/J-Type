@@ -2,6 +2,7 @@ function BulletSprite(type) {
 	this.type   = type;
 	this.sprite = null;
 	this.speed = 12;
+	this.bombSpeed = 6;
 	this.destroy = false;
 	this.power = 100; //default power for a bullet
 	this.scale = 1;
@@ -14,15 +15,19 @@ BulletSprite.PROTAG_BULLET = 1;
 BulletSprite.WIDTH = 64;
 
 BulletSprite.prototype.update = function() {
+	
+	//set the local speed for bomb or bullet
+	var spd = this.isBomb ? this.bombSpeed : this.speed;
 	if(this.type == BulletSprite.PROTAG_BULLET) {
+		
 		//protag bullets always move left to right
-		this.sprite.position.x += this.speed;
+		this.sprite.position.x += spd;
 		if(this.sprite.position.x > 800)
 			this.destroy = true; //flag as off screen to clean up
 	}
 	else {
 		//enemy bullets always move right to left
-		this.sprite.position.x -= this.speed;
+		this.sprite.position.x -= spd;
 		if(this.sprite.position.x < 0)
 			this.destroy = true;
 	}
