@@ -17,7 +17,6 @@ function Scroller(stage) {
 	);
 	
 
-	// TODO: Put in image path.
 	var midTexture = PIXI.Texture.fromImage("resources/jtype-bg-mid.png");
 	this.mid = new BackgroundScene(
 		midTexture,
@@ -29,7 +28,6 @@ function Scroller(stage) {
 	);
 	
 	
-	// TODO: Put in image path.
 	var nearTexture = PIXI.Texture.fromImage("resources/jtype-bg-near.png");
 	this.near = new BackgroundScene(
 		nearTexture,
@@ -206,13 +204,30 @@ Scroller.prototype.getViewportX = function() {
 };
 
 Scroller.prototype.moveViewportXBy = function(currTime, units) {
+
+	if(!this.speed){
+		this.speed = 10000;
+	}
+
 	if(this.timeLabel)
 		this.updateTimer();
 
 	if(gameover && currTime - this.gameoverTime > 500) {
 		playing = false;
 	}
-	
+	if(currTime -  startTime - 15000 > 1000 && currTime -  startTime - 15000 <= 1400){
+		this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_5, .8);
+		this.speed -= 2000;
+	}
+	if(currTime -  startTime - 30000 > 1000 && currTime -  startTime - 30000 <= 1400){
+		this.speed -= 2000;
+	}
+	if(currTime -  startTime - 45000 > 1000 && currTime -  startTime - 45000 <= 1400){
+		this.speed -= 2000;
+	}
+	if(currTime -  startTime - 100000 > 1000 && currTime -  startTime - 100000 <= 1400){
+		this.speed -= 2000;
+	}
 	var newViewportX = this.viewportX + units;
 	this.player_ship.update(currTime, vx, vy);
 	
@@ -226,11 +241,11 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	if(this.ships == false && this.lastShipInterval == 0) {
 		this.lastShipInterval = currTime;
 	}
-	else if(this.ships == false && currTime - this.lastShipInterval > 10000) {
+	else if(this.ships == false && currTime - this.lastShipInterval > this.speed) {
 		this.ships = true;
 		this.lastShipInterval = currTime;
 	}
-	else if(this.ships == true && currTime - this.lastShipInterval > 10000) {
+	else if(this.ships == true && currTime - this.lastShipInterval > this.speed) {
 		this.ships = false;
 		this.lastShipInterval = currTime;
 		this.shipPatterns++;
