@@ -56,7 +56,8 @@ Main.prototype.loadSpriteSheet = function() {
 						 "resources/KB_Explosion_frame5.png", "resources/KB_Laserbomb_Aqua.png",
 						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png",
 						 "resources/credits.png", "resources/jtype_logo.png",
-						 "resources/play_button.png", "resources/scores_button.png" ];
+						 "resources/play_button.png", "resources/scores_button.png",
+						 "resources/KB_EnemyBabyShip_Red.png", "resources/KB_Laserbullets_Purple.png" ];
 	loader = new PIXI.AssetLoader(assetsToLoad);
 	loader.onComplete = this.spriteSheetLoaded.bind(this);
 	loader.load();

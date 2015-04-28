@@ -8,6 +8,11 @@ function PlayerShipSprite(sprite) {
 	
 	//power settings of the weapons, increase this when a powerup is picked up
 	this.power = 100;
+	//power of bombs
+	this.bombPower = 300;
+	//count of bombs
+	this.bombs = 3;
+	
 	//power up will make bullets slightly bigger
 	this.bulletScale = 1;
 	//speed settings for ship, increase this when a powerup is picked up
@@ -105,6 +110,14 @@ PlayerShipSprite.prototype.speedPowerUp = function() {
 		this.speed += .25;
 	}
 };
+
+PlayerShipSprite.prototype.bombPowerUp = function() {
+	this.bombs++;
+	if(this.bombs == 10 && this.bombPower == 300) {
+		this.bombPower = 600;
+	}
+};
+
 
 /*
  * Reset the default settings of the player's ship

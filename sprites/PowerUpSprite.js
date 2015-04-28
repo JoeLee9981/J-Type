@@ -31,13 +31,13 @@ PowerUpSprite.prototype.doPowerUp = function(player) {
 		player.speedPowerUp();
 	}
 	else if(this.type == PowerUpSprite.EXTRA_LIFE_POWERUP) {
-		player.lvies++;
+		player.lives++;
 	}
 	else if(this.type == PowerUpSprite.HEALTH_POWERUP) {
 		player.speedPowerUp();
 	}
 	else if(this.type == PowerUpSprite.BOMB_POWERUP) {
-		player.speedPowerUp();
+		player.bombPowerUp();
 	}
 	
 	this.destroy = true;

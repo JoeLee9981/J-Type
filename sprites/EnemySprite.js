@@ -26,7 +26,7 @@ function EnemySprite() {
 	this.patterns[EnemySprite.PATTERN_5] = { x: 800, y: 100, dx: -.9, dx2: .8, dx3: 1, dy: .05, dy2: .2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
 	this.patterns[EnemySprite.PATTERN_6] = { x: 800, y: 500, dx: -.9, dx2: .8, dx3: 1, dy: -.05, dy2: -.2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
 
-	this.textures = [ PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyMotherShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png")];
+	this.textures = [ PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyMotherShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip_Red.png")];
 }
 
 EnemySprite.prototype.update = function(currTime) {
@@ -150,12 +150,6 @@ EnemySprite.prototype.setSprite = function(sprite, pattern, type, scale) {
 	this.sprite.height *= scale;
 	
 	if(pattern == EnemySprite.PATTERN_5 || pattern == EnemySprite.PATTERN_6)
-		this.cloak();
-	
-	//tint the specials red
-	if(type == EnemySprite.SPECIAL) {
-		this.sprite.tint = 0xFF7777;
-	}
 		
 	if(debug) {
 		var graphics = new PIXI.Graphics();
@@ -191,14 +185,10 @@ EnemySprite.prototype.setSpriteOverrideXAndY = function(sprite, start_x, start_y
 	//set the scale of the enemy
 	this.sprite.width *= scale;
 	this.sprite.height *= scale;
+	this.scale = scale;
 	
 	if(pattern == EnemySprite.PATTERN_5 || pattern == EnemySprite.PATTERN_6)
 		this.cloak();
-	
-	//tint the specials red
-	if(type == EnemySprite.SPECIAL) {
-		this.sprite.tint = 0xFF7777;
-	}
 		
 	if(debug) {
 		var graphics = new PIXI.Graphics();
@@ -225,9 +215,6 @@ EnemySprite.prototype.resetScale = function() {
 	this.lastShot = 0;
 	this.shotSpeed = 300;
 	this.decloak();
-	if(this.type == EnemySprite.SPECIAL) {
-		this.sprite.tint = 0xFFFFFF;
-	}
 }
 
 EnemySprite.prototype.cloak = function() {

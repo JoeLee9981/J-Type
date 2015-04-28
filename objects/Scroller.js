@@ -76,6 +76,11 @@ function Scroller(stage) {
 	healthText.position.x = 10;
 	healthText.position.y = 10;
 	
+	var shipsText = new PIXI.Text("Ships: 3", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.shipsLabel = shipsText;
+	shipsText.position.x = 200;
+	shipsText.position.y = 10;
+	
 	var powerText = new PIXI.Text("Power: 100 / 500", {font: " bold 20px Snippet", fill: "white", align: "left"});
 	this.powerLabel = powerText;
 	this.powerLabel.position.x = 10;
@@ -85,6 +90,11 @@ function Scroller(stage) {
 	this.speedLabel = speedText;
 	this.speedLabel.position.x = 200;
 	this.speedLabel.position.y = 580;
+	
+	var bombText = new PIXI.Text("Bombs: 0", {font: " bold 20px Snippet", fill: "white", align: "left"});
+	this.bombLabel = bombText;
+	this.bombLabel.position.x = 350;
+	this.bombLabel.position.y = 580;
 
 	this.viewportX = 0;
 	this.lastAsteroid = 0; //last saved time used to determine when to draw new objects
@@ -127,6 +137,8 @@ Scroller.prototype.beginGame = function() {
 	stage.addChild(this.healthLabel);
 	stage.addChild(this.powerLabel);
 	stage.addChild(this.speedLabel);
+	stage.addChild(this.bombLabel);
+	stage.addChild(this.shipsLabel);
 	this.startTimer();
 };
 
@@ -216,7 +228,7 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		playing = false;
 	}
 	if(currTime -  startTime - 15000 > 1000 && currTime -  startTime - 15000 <= 1400){
-		this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_5, .8);
+		//this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_5, .8);
 		this.speed -= 2000;
 	}
 	if(currTime -  startTime - 30000 > 1000 && currTime -  startTime - 30000 <= 1400){
@@ -285,6 +297,8 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	if(currTime - this.lastAsteroid > 2000) {
 		this.asteroids.addNewSprite(Math.floor(Math.random() * 3), Math.floor(Math.random() * 4));
 		this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
+		this.powerUps.addNewSprite(PowerUpSprite.EXTRA_LIFE_POWERUP, 700, 430);
+		this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 460);
 		this.lastAsteroid = currTime;
 	}
 	/*if(currTime - this.lastShipInterval % 6000 >= 0 || currTime - this.lastShipInterval % 6000 < 2000 ) {
@@ -335,13 +349,22 @@ Scroller.prototype.updatePower = function() {
 	
 	this.powerLabel.setText("Power: " + this.player_ship.power + " / 500");
 	this.speedLabel.setText("Speed: " + this.player_ship.speed + " / 4");
+	this.bombLabel.setText("Bombs: " + this.player_ship.bombs);
+	this.shipsLabel.setText("Ships: " + this.player_ship.lives);
 };
 
 Scroller.prototype.destroyPlayerShip = function() {
+	this.player_ship.lives--;
+	
+	if(this.player_ship.lives == 0) {
+		//gameover = true;
+		//this.gameoverTime = new Date().getTime();
+		//this.stage.removeChild(this.player_ship.sprite);
+	}
+	
+	this.shipsLabel.setText("Ships: " + this.player_ship.lives);
 	//this.explosions.addNewSprite(this.player_ship.sprite.position.x, this.player_ship.sprite.position.y, 1, ExplosionSprite.NORMAL);
-	//this.stage.removeChild(this.player_ship.sprite);
-	//gameover = true;
-	//this.gameoverTime = new Date().getTime();
+	//this.player_ship.reset();
 };
 
 Scroller.prototype.destroyAsteroid = function(asteroid) {
