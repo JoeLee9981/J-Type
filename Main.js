@@ -7,6 +7,7 @@ var firing = 0;
 debug = false;
 playing = true;
 gameover = false;
+titleScreen = true;
 
 interactive = true;
 

@@ -71,43 +71,23 @@ function Scroller(stage) {
 		this.graphics2.drawRect(0, 0, this.player_ship.getBodyWidth(), this.player_ship.getBodyHeight());
 	}
 
-	var healthText = new PIXI.Text("Health: 1000 / 1000", {font: " bold 20px Snippet", fill: "white", align: "right"});
-	this.healthLabel = healthText;
-	healthText.position.x = 10;
-	healthText.position.y = 10;
-	
-	var shipsText = new PIXI.Text("Ships: 3", {font: " bold 20px Snippet", fill: "white", align: "right"});
-	this.shipsLabel = shipsText;
-	shipsText.position.x = 200;
-	shipsText.position.y = 10;
-	
-	var powerText = new PIXI.Text("Power: 100 / 500", {font: " bold 20px Snippet", fill: "white", align: "left"});
-	this.powerLabel = powerText;
-	this.powerLabel.position.x = 10;
-	this.powerLabel.position.y = 580;
-	
-	var speedText = new PIXI.Text("Speed: 3 / 4", {font: " bold 20px Snippet", fill: "white", align: "left"});
-	this.speedLabel = speedText;
-	this.speedLabel.position.x = 200;
-	this.speedLabel.position.y = 580;
-	
-	var bombText = new PIXI.Text("Bombs: 0", {font: " bold 20px Snippet", fill: "white", align: "left"});
-	this.bombLabel = bombText;
-	this.bombLabel.position.x = 350;
-	this.bombLabel.position.y = 580;
+	this.drawLabels();
 
 	this.viewportX = 0;
 	this.lastAsteroid = 0; //last saved time used to determine when to draw new objects
 	this.lastBullet = 0;
 	this.lastCollisionCheck = 0; //used to restrict collision checks to a time frame
-	this.displayTitleScreen();
 	this.ships = false;
 	this.lastShipInterval = 0;
 	this.lastShipTime = 0;
 	this.shipPatterns = 0;
+	
+	this.displayTitleScreen();
 }
 
 Scroller.prototype.beginGame = function() {
+	titleScreen = false;
+
 	// Remove old sprites
 	stage.removeChild(this.jTypeLogo);
 	stage.removeChild(this.jTypeCredits);
@@ -134,6 +114,8 @@ Scroller.prototype.beginGame = function() {
 		stage.addChild(this.graphics2);
 	}
 	
+	stage.addChild(this.topBar);
+	stage.addChild(this.bottomBar);
 	stage.addChild(this.healthLabel);
 	stage.addChild(this.powerLabel);
 	stage.addChild(this.speedLabel);
@@ -146,7 +128,7 @@ Scroller.prototype.displayTitleScreen = function() {
 	// Display logo.
 	this.jTypeLogo = PIXI.Sprite.fromImage("resources/jtype_logo.png");
 	stage.addChild(this.jTypeLogo);
-	this.jTypeLogo.position.x = 20;
+	this.jTypeLogo.position.x = 0;
 	this.jTypeLogo.position.y = 0;
 
 	// Display credits.
@@ -243,114 +225,152 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	var newViewportX = this.viewportX + units;
 	this.player_ship.update(currTime, vx, vy);
 	
-	if(debug) {
-		//draws a box around the player's ship where collision occurs
-		this.player_sails_box.position.x = this.player_ship.getSailsX();
-		this.player_sails_box.position.y = this.player_ship.getSailsY();
-		this.player_body_box.position.x = this.player_ship.getBodyX();
-		this.player_body_box.position.y = this.player_ship.getBodyY();
-	}
-	if(this.ships == false && this.lastShipInterval == 0) {
-		this.lastShipInterval = currTime;
-	}
-	else if(this.ships == false && currTime - this.lastShipInterval > this.speed) {
-		this.ships = true;
-		this.lastShipInterval = currTime;
-	}
-	else if(this.ships == true && currTime - this.lastShipInterval > this.speed) {
-		this.ships = false;
-		this.lastShipInterval = currTime;
-		this.shipPatterns++;
-		if(this.shipPatterns > 2)
-			this.shipPatterns = 0;
-		console.log("Setting ship patterns to: " + this.shipPatterns)
-	}
-	else if(this.ships == true && currTime - this.lastShipTime > 1000) {
-		if(this.shipPatterns == 0) {
-			
-			var pattern = EnemySprite.BABY;
-			if(Math.random() * 100 > 90) {
-				pattern = EnemySprite.SPECIAL;
-			}
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_1, .4);
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_2, .4);
+	if(!titleScreen) {
+		if(debug) {
+			//draws a box around the player's ship where collision occurs
+			this.player_sails_box.position.x = this.player_ship.getSailsX();
+			this.player_sails_box.position.y = this.player_ship.getSailsY();
+			this.player_body_box.position.x = this.player_ship.getBodyX();
+			this.player_body_box.position.y = this.player_ship.getBodyY();
 		}
-		else if(this.shipPatterns == 1) {
-			var pattern = EnemySprite.BABY;
-			if(Math.random() * 100 > 90) {
-				pattern = EnemySprite.SPECIAL;
-			}
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_3, .4);
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_4, .4);
+		if(this.ships == false && this.lastShipInterval == 0) {
+			this.lastShipInterval = currTime;
 		}
-		else if(this.shipPatterns == 2) {
-			var pattern = EnemySprite.BABY;
-			if(Math.random() * 100 > 90) {
-				pattern = EnemySprite.SPECIAL;
-			}
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_5, .4);
-			this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_6, .4);
+		else if(this.ships == false && currTime - this.lastShipInterval > this.speed) {
+			this.ships = true;
+			this.lastShipInterval = currTime;
 		}
-		this.lastShipTime = currTime;
+		else if(this.ships == true && currTime - this.lastShipInterval > this.speed) {
+			this.ships = false;
+			this.lastShipInterval = currTime;
+			this.shipPatterns++;
+			if(this.shipPatterns > 2)
+				this.shipPatterns = 0;
+			console.log("Setting ship patterns to: " + this.shipPatterns)
+		}
+		else if(this.ships == true && currTime - this.lastShipTime > 1000) {
+			if(this.shipPatterns == 0) {
+				
+				var pattern = EnemySprite.BABY;
+				if(Math.random() * 100 > 90) {
+					pattern = EnemySprite.SPECIAL;
+				}
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_1, .4);
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_2, .4);
+			}
+			else if(this.shipPatterns == 1) {
+				var pattern = EnemySprite.BABY;
+				if(Math.random() * 100 > 90) {
+					pattern = EnemySprite.SPECIAL;
+				}
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_3, .4);
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_4, .4);
+			}
+			else if(this.shipPatterns == 2) {
+				var pattern = EnemySprite.BABY;
+				if(Math.random() * 100 > 90) {
+					pattern = EnemySprite.SPECIAL;
+				}
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_5, .4);
+				this.enemies.addNewSprite(pattern, EnemySprite.PATTERN_6, .4);
+			}
+			this.lastShipTime = currTime;
+		}
+		
+		if(currTime - this.lastAsteroid > 2000) {
+			this.asteroids.addNewSprite(Math.floor(Math.random() * 3), Math.floor(Math.random() * 4));
+			this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
+			this.powerUps.addNewSprite(PowerUpSprite.EXTRA_LIFE_POWERUP, 700, 430);
+			this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 460);
+			this.lastAsteroid = currTime;
+		}
+		/*if(currTime - this.lastShipInterval % 6000 >= 0 || currTime - this.lastShipInterval % 6000 < 2000 ) {
+			if(currTime - this.lastShipTime > 1000) {
+				this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_1, .4);
+				this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_2, .4);
+				this.lastShipTime = currTime;
+			}
+		}
+		if(currTime - this.lastShipInterval % 6000 >= 4000 || currTime - this.lastShipInterval % 6000 < 6000 ) {
+			if(currTime - this.lastShipTime > 1000) {
+				this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_5, .4);
+				this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_6, .4);
+				this.lastShipTime = currTime;
+			}
+		}*/
+		if(currTime - this.lastBullet > 300 && firing) {
+			this.bullets.addNewProtagSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), this.player_ship.bulletScale);
+			//power up
+			if(this.player_ship.powerUp >= 3)
+				this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() - 25, this.player_ship.bulletScale);
+			if(this.player_ship.powerUp == 5)
+				this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() + 25, this.player_ship.bulletScale);
+			this.lastBullet = currTime;
+		}
+		else if(!titleScreen && (currTime - this.lastCollisionCheck > 100)) {
+			this.checkCollision();
+			this.lastCollisionCheck = currTime;
+		}
+		this.bullets.update();
+		this.asteroids.update(currTime);
+		this.explosions.update(currTime);
+		this.enemies.update(currTime);
+		this.powerUps.update();	
+		this.updateHealth();
+		this.updatePower();
 	}
 	
-	if(currTime - this.lastAsteroid > 2000) {
-		this.asteroids.addNewSprite(Math.floor(Math.random() * 3), Math.floor(Math.random() * 4));
-		this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
-		this.powerUps.addNewSprite(PowerUpSprite.EXTRA_LIFE_POWERUP, 700, 430);
-		this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 460);
-		this.lastAsteroid = currTime;
-	}
-	/*if(currTime - this.lastShipInterval % 6000 >= 0 || currTime - this.lastShipInterval % 6000 < 2000 ) {
-		if(currTime - this.lastShipTime > 1000) {
-			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_1, .4);
-			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_2, .4);
-			this.lastShipTime = currTime;
-		}
-	}
-	if(currTime - this.lastShipInterval % 6000 >= 4000 || currTime - this.lastShipInterval % 6000 < 6000 ) {
-		if(currTime - this.lastShipTime > 1000) {
-			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_5, .4);
-			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_6, .4);
-			this.lastShipTime = currTime;
-		}
-	}*/
-	if(currTime - this.lastBullet > 300 && firing) {
-		this.bullets.addNewProtagSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), this.player_ship.bulletScale);
-		//power up
-		if(this.player_ship.powerUp >= 3)
-			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() - 25, this.player_ship.bulletScale);
-		if(this.player_ship.powerUp == 5)
-			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() + 25, this.player_ship.bulletScale);
-		this.lastBullet = currTime;
-	}
-	else if(currTime - this.lastCollisionCheck > 100) {
-		this.checkCollision();
-		this.lastCollisionCheck = currTime;
-	}
-	this.bullets.update();
-	this.asteroids.update(currTime);
-	this.explosions.update(currTime);
-	this.enemies.update(currTime);
-	this.powerUps.update();
-
 	this.setViewportX(newViewportX);
+};
+
+Scroller.prototype.drawLabels = function() {
+	// Draw top and bottom bars.
+	this.topBar = PIXI.Sprite.fromImage("resources/top_bar.png");	
+	this.topBar.position.x = 0;
+	this.topBar.position.y = 0;
 	
-	this.updateHealth();
-	this.updatePower();
+	this.bottomBar = PIXI.Sprite.fromImage("resources/bottom_bar.png");
+	this.bottomBar.position.x = 0;
+	this.bottomBar.position.y = 565;
+
+	// Draw text.
+	var healthText = new PIXI.Text("1000 / 1000", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.healthLabel = healthText;
+	healthText.position.x = 145;
+	healthText.position.y = 9;
+	
+	var speedText = new PIXI.Text("x3", {font: " bold 20px Snippet", fill: "white", align: "left"});
+	this.speedLabel = speedText;
+	this.speedLabel.position.x = 55;
+	this.speedLabel.position.y = 570;
+		
+	var powerText = new PIXI.Text("x1", {font: " bold 20px Snippet", fill: "white", align: "left"});
+	this.powerLabel = powerText;
+	this.powerLabel.position.x = 150;
+	this.powerLabel.position.y = 570;
+	
+	var shipsText = new PIXI.Text("x3", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.shipsLabel = shipsText;
+	shipsText.position.x = 350;
+	shipsText.position.y = 570;
+	
+	var bombText = new PIXI.Text("x0", {font: " bold 20px Snippet", fill: "white", align: "left"});
+	this.bombLabel = bombText;
+	this.bombLabel.position.x = 450;
+	this.bombLabel.position.y = 570;
 };
 
 Scroller.prototype.updateHealth = function() {
 	
-	this.healthLabel.setText("Health: " + this.player_ship.health + " / " + this.player_ship.total_health);
+	this.healthLabel.setText(this.player_ship.health + " / " + this.player_ship.total_health);
 };
 
 Scroller.prototype.updatePower = function() {
 	
-	this.powerLabel.setText("Power: " + this.player_ship.power + " / 500");
-	this.speedLabel.setText("Speed: " + this.player_ship.speed + " / 4");
-	this.bombLabel.setText("Bombs: " + this.player_ship.bombs);
-	this.shipsLabel.setText("Ships: " + this.player_ship.lives);
+	this.powerLabel.setText("x" + this.player_ship.power);
+	this.speedLabel.setText("x" + this.player_ship.speed);
+	this.bombLabel.setText("x" + this.player_ship.bombs);
+	this.shipsLabel.setText("x" + this.player_ship.lives);
 };
 
 Scroller.prototype.destroyPlayerShip = function() {
@@ -564,10 +584,10 @@ Scroller.prototype.checkCollision = function() {
 };
 
 Scroller.prototype.startTimer = function() {	
-	var timerText = new PIXI.Text("Time: 00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	var timerText = new PIXI.Text("00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
 	this.timeLabel = timerText;
 	timerText.position.x = 650;
-	timerText.position.y = 10;
+	timerText.position.y = 9;
 	this.stage.addChild(timerText);
 	
 	startTime = new Date().getTime();
@@ -588,6 +608,6 @@ Scroller.prototype.updateTimer = function() {
 	if(hours < 10)
 		hours = '0' + hours;
 	
-	this.timeLabel.setText("Time: " + hours + ":" + minutes + ":" + seconds);
+	this.timeLabel.setText(hours + ":" + minutes + ":" + seconds);
 };
 
