@@ -23,8 +23,8 @@ function EnemySprite() {
 	this.patterns[EnemySprite.PATTERN_2] = { x: 800, y: 400, dx: -1, dy: "-COS", amp: 200, freq: 100 };
 	this.patterns[EnemySprite.PATTERN_3] = { x: 800, y: 250, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2: -.25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
 	this.patterns[EnemySprite.PATTERN_4] = { x: 800, y: 350, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2:  .25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
-	this.patterns[EnemySprite.PATTERN_5] = { x: 800, y: 100, dx: -.9, dx2: .8, dx3: 1, dy: .05, dy2: .2, dy3: 0, xChange: 100, xChange2: 650, part: 0 };
-	this.patterns[EnemySprite.PATTERN_6] = { x: 800, y: 500, dx: -.9, dx2: .8, dx3: 1, dy: -.05, dy2: -.2, dy3: 0, xChange: 100, xChange2: 650, part: 0 };
+	this.patterns[EnemySprite.PATTERN_5] = { x: 800, y: 100, dx: -.9, dx2: .8, dx3: 1, dy: .05, dy2: .2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
+	this.patterns[EnemySprite.PATTERN_6] = { x: 800, y: 500, dx: -.9, dx2: .8, dx3: 1, dy: -.05, dy2: -.2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
 
 	this.textures = [ PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyMotherShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png")];
 }
@@ -56,9 +56,6 @@ EnemySprite.prototype.update = function(currTime) {
 		if(this.patterns[this.pattern].part == 2) {
 			this.sprite.position.x += this.patterns[this.pattern].dx3 * this.speed;
 			this.sprite.position.y += this.patterns[this.pattern].dy3 * this.speed;
-			if(this.sprite.position.x <= 0 - this.sprite.width) {
-				this.patterns[this.pattern].part = 0;
-			}
 		}
 	}
 	else if(this.pattern == EnemySprite.PATTERN_5 || this.pattern == EnemySprite.PATTERN_6) {
@@ -86,9 +83,6 @@ EnemySprite.prototype.update = function(currTime) {
 		if(this.patterns[this.pattern].part == 2) {
 			this.sprite.position.x += this.patterns[this.pattern].dx3 * this.speed;
 			this.sprite.position.y += this.patterns[this.pattern].dy3 * this.speed;
-			if(this.sprite.position.x >= 800) {
-				this.patterns[this.pattern].part = 0;
-			}
 		}
 	}
 	else {
@@ -170,6 +164,14 @@ EnemySprite.prototype.setSprite = function(sprite, pattern, type, scale) {
 		graphics.drawRect(0, 0, this.sprite.width, this.sprite.height);
 		stage.addChild(graphics);
 	}
+	
+	this.patterns = [];
+	this.patterns[EnemySprite.PATTERN_1] = { x: 800, y: 200, dx: -1, dy: "COS", amp: 200, freq: 100 };
+	this.patterns[EnemySprite.PATTERN_2] = { x: 800, y: 400, dx: -1, dy: "-COS", amp: 200, freq: 100 };
+	this.patterns[EnemySprite.PATTERN_3] = { x: 800, y: 250, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2: -.25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
+	this.patterns[EnemySprite.PATTERN_4] = { x: 800, y: 350, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2:  .25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
+	this.patterns[EnemySprite.PATTERN_5] = { x: 800, y: 100, dx: -.9, dx2: .8, dx3: 1, dy: .05, dy2: .2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
+	this.patterns[EnemySprite.PATTERN_6] = { x: 800, y: 500, dx: -.9, dx2: .8, dx3: 1, dy: -.05, dy2: -.2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
 }
 
 /*
@@ -205,6 +207,15 @@ EnemySprite.prototype.setSpriteOverrideXAndY = function(sprite, start_x, start_y
 		graphics.drawRect(0, 0, this.sprite.width, this.sprite.height);
 		stage.addChild(graphics);
 	}
+	
+	this.patterns = [];
+	this.patterns[EnemySprite.PATTERN_1] = { x: 800, y: 200, dx: -1, dy: "COS", amp: 200, freq: 100 };
+	this.patterns[EnemySprite.PATTERN_2] = { x: 800, y: 400, dx: -1, dy: "-COS", amp: 200, freq: 100 };
+	this.patterns[EnemySprite.PATTERN_3] = { x: 800, y: 250, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2: -.25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
+	this.patterns[EnemySprite.PATTERN_4] = { x: 800, y: 350, dx: -1, dx2: .5, dx3: -1, dy: 0, dy2:  .25, dy3: 0, xChange: 400, xChange2: 700, part: 0 };
+	this.patterns[EnemySprite.PATTERN_5] = { x: 800, y: 100, dx: -.9, dx2: .8, dx3: 1, dy: .05, dy2: .2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
+	this.patterns[EnemySprite.PATTERN_6] = { x: 800, y: 500, dx: -.9, dx2: .8, dx3: 1, dy: -.05, dy2: -.2, dy3: 0, xChange: 200, xChange2: 650, part: 0 };
+	
 }
 
 EnemySprite.prototype.resetScale = function() {

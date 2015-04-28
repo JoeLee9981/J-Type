@@ -27,6 +27,19 @@ PowerUpSprite.prototype.doPowerUp = function(player) {
 	if(this.type == PowerUpSprite.SHOOT_POWERUP) {
 		player.shootPowerUp();
 	}
+	else if(this.type == PowerUpSprite.SPEED_POWERUP) {
+		player.speedPowerUp();
+	}
+	else if(this.type == PowerUpSprite.EXTRA_LIFE_POWERUP) {
+		player.lvies++;
+	}
+	else if(this.type == PowerUpSprite.HEALTH_POWERUP) {
+		player.speedPowerUp();
+	}
+	else if(this.type == PowerUpSprite.BOMB_POWERUP) {
+		player.speedPowerUp();
+	}
+	
 	this.destroy = true;
 };
 

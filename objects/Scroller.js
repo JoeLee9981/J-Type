@@ -82,6 +82,11 @@ function Scroller(stage) {
 	this.powerLabel = powerText;
 	this.powerLabel.position.x = 10;
 	this.powerLabel.position.y = 580;
+	
+	var speedText = new PIXI.Text("Speed: 3 / 4", {font: " bold 20px Snippet", fill: "white", align: "left"});
+	this.speedLabel = speedText;
+	this.speedLabel.position.x = 200;
+	this.speedLabel.position.y = 580;
 
 	this.viewportX = 0;
 	this.lastAsteroid = 0; //last saved time used to determine when to draw new objects
@@ -109,11 +114,11 @@ Scroller.prototype.beginGame = function() {
 	stage.addChild(this.bullets);
 	stage.addChild(this.explosions);
 	
-	this.powerUps.addNewSprite(PowerUpSprite.BOMB_POWERUP, 700, 100);
-	this.powerUps.addNewSprite(PowerUpSprite.EXTRA_LIFE_POWERUP, 700, 200);
-	this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 300);
-	this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
-	this.powerUps.addNewSprite(PowerUpSprite.SPEED_POWERUP, 700, 500);
+	//this.powerUps.addNewSprite(PowerUpSprite.BOMB_POWERUP, 700, 100);
+	//this.powerUps.addNewSprite(PowerUpSprite.EXTRA_LIFE_POWERUP, 700, 200);
+	//this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 300);
+	//this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
+	//this.powerUps.addNewSprite(PowerUpSprite.SPEED_POWERUP, 700, 500);
 	
 	//creates the bounding box of the hitbox for a player ship
 	if(debug) {
@@ -123,6 +128,7 @@ Scroller.prototype.beginGame = function() {
 	
 	stage.addChild(this.healthLabel);
 	stage.addChild(this.powerLabel);
+	stage.addChild(this.speedLabel);
 	this.startTimer();
 };
 
@@ -282,6 +288,11 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	}*/
 	if(currTime - this.lastBullet > 300 && firing) {
 		this.bullets.addNewProtagSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), this.player_ship.bulletScale);
+		//power up
+		if(this.player_ship.powerUp >= 3)
+			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() - 25, this.player_ship.bulletScale);
+		if(this.player_ship.powerUp == 5)
+			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() + 25, this.player_ship.bulletScale);
 		this.lastBullet = currTime;
 	}
 	else if(currTime - this.lastCollisionCheck > 100) {
@@ -308,6 +319,7 @@ Scroller.prototype.updateHealth = function() {
 Scroller.prototype.updatePower = function() {
 	
 	this.powerLabel.setText("Power: " + this.player_ship.power + " / 500");
+	this.speedLabel.setText("Speed: " + this.player_ship.speed + " / 4");
 };
 
 Scroller.prototype.destroyPlayerShip = function() {
@@ -341,7 +353,10 @@ Scroller.prototype.destroyAsteroid = function(asteroid) {
 Scroller.prototype.destroyEnemy = function(enemy) {
 	//returns health, so on a 0 we need to do an explosion
 	var scale = .6;
-
+	var type = Math.floor(Math.random() * 5);
+	if(enemy.type == EnemySprite.SPECIAL) {
+		this.powerUps.addNewSprite(type, enemy.sprite.position.x, enemy.sprite.position.y);
+	}
 	this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 };
 
@@ -414,6 +429,11 @@ Scroller.prototype.checkCollision = function() {
 	for(var i = 0; i < this.enemies.sprites.length; i++) {
 		var enemy = this.enemies.sprites[i];
 		if(enemy.sprite != null) {
+			//cloaked ships can't collide
+			if(enemy.cloaked) {
+				continue;
+			}
+			
 			//check collision with player ship
 			if(this.player_ship.checkCollision(enemy.sprite.position.x, 
 									   		   enemy.sprite.position.y,

@@ -4,7 +4,7 @@ var vx = 0;
 var vy = 0;
 var firing = 0;
 
-debug = true;
+debug = false;
 playing = true;
 gameover = false;
 
