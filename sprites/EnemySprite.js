@@ -150,6 +150,7 @@ EnemySprite.prototype.setSprite = function(sprite, pattern, type, scale) {
 	this.sprite.height *= scale;
 	
 	if(pattern == EnemySprite.PATTERN_5 || pattern == EnemySprite.PATTERN_6)
+		this.cloak();
 		
 	if(debug) {
 		var graphics = new PIXI.Graphics();

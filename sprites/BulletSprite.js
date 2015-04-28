@@ -33,13 +33,18 @@ BulletSprite.prototype.update = function() {
 	}
 };
 
-BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale) {
+BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, isBomb) {
 	this.sprite = sprite;
 	this.scale = scale;
 	this.sprite.width *= scale;
 	this.sprite.height *= scale;
 	this.sprite.position.x = start_x;
 	this.sprite.position.y = start_y;
+	
+	if(isBomb)
+		this.isBomb = true;
+	else
+		this.isBomb = false;
 	
 	if(debug) {
 		var graphics = new PIXI.Graphics();
@@ -48,7 +53,7 @@ BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale) {
 		graphics.drawRect(0, 0, this.sprite.width, this.sprite.height);
 		stage.addChild(graphics);
 	}
-};
+}; 
 
 BulletSprite.prototype.reset = function() {
 	this.destroy = false;

@@ -34,7 +34,7 @@ PowerUpSprite.prototype.doPowerUp = function(player) {
 		player.lives++;
 	}
 	else if(this.type == PowerUpSprite.HEALTH_POWERUP) {
-		player.speedPowerUp();
+		player.healthPowerUp();
 	}
 	else if(this.type == PowerUpSprite.BOMB_POWERUP) {
 		player.bombPowerUp();

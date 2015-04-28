@@ -12,6 +12,10 @@ function PlayerShipSprite(sprite) {
 	this.bombPower = 300;
 	//count of bombs
 	this.bombs = 3;
+	//rate of fire - decrease for faster
+	this.fireSpeed = 300;
+	//fire speed for bombs
+	this.bombFireSpeed = 3000;
 	
 	//power up will make bullets slightly bigger
 	this.bulletScale = 1;
@@ -28,6 +32,8 @@ function PlayerShipSprite(sprite) {
 	this.lives = 3;
 	//power powerups
 	this.powerUp = 1;
+	//health power up
+	this.healthUp = 0;
 	
 	this.frame = 0;
 	this.last = 0;
@@ -96,12 +102,15 @@ PlayerShipSprite.prototype.checkCollision = function(x, y, width, height) {
 }
 
 PlayerShipSprite.prototype.shootPowerUp = function() {
-	if(this.powerUp < 5) {
+	if(this.powerUp < 6) {
 		this.powerUp++;
 		if(this.powerUp == 2)
 			this.power = 150;
 		else if(this.powerUp == 4)
 			this.power = 200;
+		else if(this.powerUp == 6) {
+			this.fireSpeed = 200;
+		}
 	}
 };
 
@@ -118,6 +127,17 @@ PlayerShipSprite.prototype.bombPowerUp = function() {
 	}
 };
 
+PlayerShipSprite.prototype.healthPowerUp = function() {
+	this.healthUp++;
+	
+	//every 5 pickups increases total health
+	if(this.healthUp % 5 == 0) {
+		this.total_health += 500;
+	}
+	this.health += 500;
+	if(this.health > this.total_health)
+		this.health = this.total_health;
+};
 
 /*
  * Reset the default settings of the player's ship
@@ -128,8 +148,15 @@ PlayerShipSprite.prototype.reset = function() {
 	this.lives = 3;
 	//power settings of the weapons, increase this when a powerup is picked up
 	this.power = 100;
+	//power of bombs
+	this.bombPower = 300;
 	//power up will make bullets slightly bigger
 	this.bulletScale = 1;
+	//rate of fire - decrease for faster
+	this.fireSpeed = 300;
+	//fire speed for bombs
+	this.bombFireSpeed = 3000;
+	
 	//speed settings for ship, increase this when a powerup is picked up
 	this.speed = 3;
 	//damage inclicted by ships hull when colliding
@@ -141,6 +168,8 @@ PlayerShipSprite.prototype.reset = function() {
 	this.health = 1000;
 	//power powerups
 	this.powerUp = 1;
+	//health powerups
+	this.healthUp = 0;
 	
 	this.frame = 0;
 	this.last = 0;

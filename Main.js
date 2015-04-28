@@ -3,6 +3,7 @@
 var vx = 0;
 var vy = 0;
 var firing = 0;
+var fire_bomb = 0;
 
 debug = false;
 playing = true;
@@ -83,11 +84,15 @@ Main.prototype.spriteSheetLoaded = function() {
 
 
 function setupKeyEvents() {
+	
+	//movement keys
 	var left = keyboard(37);
 	var right = keyboard(39);
 	var up = keyboard(38);
 	var down = keyboard(40);
-	var space = keyboard(32);
+	
+	var space = keyboard(32); // space key is to fire
+	var a = keyboard(65); // a key is for bombs
 	
 	space.press = function() {
 		firing = 1;
@@ -95,6 +100,14 @@ function setupKeyEvents() {
 	
 	space.release = function() {
 		firing = 0;
+	}
+	
+	a.press = function() {
+		fire_bomb = 1;
+	}
+	
+	a.release = function() {
+		fire_bomb = 0;
 	}
 	
 	left.press = function() {

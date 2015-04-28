@@ -1,5 +1,6 @@
 ﻿//Timer
 var startTime;
+var player;
 
 function Scroller(stage) {
 	
@@ -57,6 +58,7 @@ function Scroller(stage) {
 	this.player_ship = new PlayerShipSprite(ship);
 	this.player_ship.sprite.position.x = 0;
 	this.player_ship.sprite.position.y = 275;
+	player = this.player_ship;
 	
 	//creates the bounding box of the hitbox for a player ship
 	if(debug) {
@@ -81,7 +83,7 @@ function Scroller(stage) {
 	this.lastShipInterval = 0;
 	this.lastShipTime = 0;
 	this.shipPatterns = 0;
-	
+	this.lastBomb = 0;
 	this.displayTitleScreen();
 }
 
@@ -320,8 +322,69 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		this.updatePower();
 	}
 	
-	this.setViewportX(newViewportX);
-};
+	if(currTime - this.lastAsteroid > 2000) {
+		this.asteroids.addNewSprite(Math.floor(Math.random() * 3), Math.floor(Math.random() * 4));
+		this.powerUps.addNewSprite(PowerUpSprite.SHOOT_POWERUP, 700, 400);
+		this.powerUps.addNewSprite(PowerUpSprite.BOMB_POWERUP, 700, 430);
+		this.powerUps.addNewSprite(PowerUpSprite.HEALTH_POWERUP, 700, 460);
+		this.lastAsteroid = currTime;
+	}
+	/*if(currTime - this.lastShipInterval % 6000 >= 0 || currTime - this.lastShipInterval % 6000 < 2000 ) {
+		if(currTime - this.lastShipTime > 1000) {
+			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_1, .4);
+			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_2, .4);
+			this.lastShipTime = currTime;
+		}
+	}
+	if(currTime - this.lastShipInterval % 6000 >= 4000 || currTime - this.lastShipInterval % 6000 < 6000 ) {
+		if(currTime - this.lastShipTime > 1000) {
+			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_5, .4);
+			this.enemies.addNewSprite(EnemySprite.BABY, EnemySprite.PATTERN_6, .4);
+			this.lastShipTime = currTime;
+		}
+	}*/
+	if(currTime - this.lastBullet > this.player_ship.fireSpeed && firing) {
+		
+		//set power bullets
+		var power = false;
+		if(this.player_ship.powerUp == 6) {
+			power = true;	
+		}
+		this.bullets.addNewProtagSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), this.player_ship.bulletScale, power);
+		//power up bullets
+		if(this.player_ship.powerUp >= 3) {
+			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() - 25, this.player_ship.bulletScale, power);
+		}
+		if(this.player_ship.powerUp >= 5) {
+			this.bullets.addNewProtagSprite(this.player_ship.getCenterX() - 25, this.player_ship.getCenterY() + 25, this.player_ship.bulletScale, power);
+			
+		}
+
+		this.lastBullet = currTime;
+	}
+	//if fire bomb button pressed and refresh is up
+	if(this.player_ship.bombs && currTime - this.lastBomb > this.player_ship.bombFireSpeed && fire_bomb) {
+		this.player_ship.bombs--; //decrement bombs
+		if(this.player_ship.bombPower == 600) {
+			//power bomb
+			this.bullets.addNewBombSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), 1, true);
+		}
+		else {
+			//normal bomb
+			this.bullets.addNewBombSprite(this.player_ship.getCenterX(), this.player_ship.getCenterY(), 1, false);
+		}
+		this.lastBomb = currTime
+	}
+	
+	if(currTime - this.lastCollisionCheck > 100) {
+		this.checkCollision();
+		this.lastCollisionCheck = currTime;
+	}
+	this.bullets.update();
+	this.asteroids.update(currTime);
+	this.explosions.update(currTime);
+	this.enemies.update(currTime);
+	this.powerUps.update();
 
 Scroller.prototype.drawLabels = function() {
 	// Draw top and bottom bars.

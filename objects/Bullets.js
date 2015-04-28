@@ -117,13 +117,19 @@ Bullets.prototype.addNewSprites = function() {
 	}
 };
 
-Bullets.prototype.addNewProtagSprite = function(start_x, start_y, scale) {
+Bullets.prototype.addNewProtagSprite = function(start_x, start_y, scale, power) {
 	//scan for open spot in the array to add our new asteroid
 	for(var i = 0; i < this.MAX_BULLETS; i++) {
 		if(this.protagSprites[i].sprite == null) {
 			var newSprite = this.protagSprites[i];
 			
-			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale);
+			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale, false);
+			
+			//for powered up bullets color red
+			if(power)
+				newSprite.sprite.setTexture(PIXI.Texture.fromFrame("resources/KB_Laserbullets_Purple.png"));
+			else
+				newSprite.sprite.setTexture(PIXI.Texture.fromFrame("resources/KB_Laserbullets_Red.png"));
 			
 			this.addChild(newSprite.sprite);
 			break;
@@ -131,13 +137,33 @@ Bullets.prototype.addNewProtagSprite = function(start_x, start_y, scale) {
 	}
 };
 
+Bullets.prototype.addNewBombSprite = function(start_x, start_y, scale, power) {
+	//scan for open spot in the array to add our new asteroid
+	for(var i = 0; i < this.MAX_BULLETS; i++) {
+		if(this.protagSprites[i].sprite == null) {
+			var newSprite = this.protagSprites[i];
+			
+			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale, true);
+			
+			//for powered up bullets color red
+			if(power)
+				newSprite.sprite.setTexture(PIXI.Texture.fromFrame("resources/KB_Laserbomb_Aqua.png"));
+			else
+				newSprite.sprite.setTexture(PIXI.Texture.fromFrame("resources/KB_Laserbomb_Red.png"));
+			
+			this.addChild(newSprite.sprite);
+			break;
+		}
+	}
+}
+
 Bullets.prototype.addNewEnemySprite = function(start_x, start_y, scale) {
 	//scan for open spot in the array to add our new asteroid
 	for(var i = 0; i < this.MAX_BULLETS; i++) {
 		if(this.enemySprites[i].sprite == null) {
 			var newSprite = this.enemySprites[i];
 			
-			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale);
+			newSprite.setSprite(this.borrowBulletSprite(newSprite.type), start_x, start_y, scale, false);
 			//anchor in the center to rotate
 			newSprite.sprite.anchor.x = .5;
 			newSprite.sprite.anchor.y = .5;
