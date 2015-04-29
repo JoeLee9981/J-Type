@@ -206,7 +206,7 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		playing = false;
 	}
 	if(currTime -  startTime - 15000 > 1000 && currTime -  startTime - 15000 <= 1400){
-		//this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_5, .8);
+		this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_1, .8);
 		this.speed -= 2000;
 	}
 	if(currTime -  startTime - 30000 > 1000 && currTime -  startTime - 30000 <= 1400){
@@ -395,8 +395,12 @@ Scroller.prototype.destroyPlayerShip = function() {
 	}
 	
 	this.shipsLabel.setText("Ships: " + this.player_ship.lives);
-	//this.explosions.addNewSprite(this.player_ship.sprite.position.x, this.player_ship.sprite.position.y, 1, ExplosionSprite.NORMAL);
-	//this.player_ship.reset();
+	this.explosions.addNewSprite(this.player_ship.sprite.position.x, this.player_ship.sprite.position.y, 1, ExplosionSprite.SLOW);
+	this.player_ship.reset(); //reset power ups
+	this.player_ship.sprite.position.x = 0; //reset position
+	this.player_ship.sprite.position.y = 275;
+	this.player_ship.invulnerable = true; //make invulnerable for short time
+	this.player_ship.resetTime = new Date().getTime();
 };
 
 Scroller.prototype.destroyAsteroid = function(asteroid) {
@@ -431,8 +435,51 @@ Scroller.prototype.destroyEnemy = function(enemy) {
 };
 
 Scroller.prototype.explodeBomb = function(bomb) {
-	this.explosions.addNewSprite(bomb.getCenterX() - 100, bomb.getCenterY() - 100, 2, ExplosionSprite.SLOW);
-	//TODO: Check the area around this bomb and damage them as well
+	var explosionX = bomb.getCenterX() - 100;
+	var explosionY = bomb.getCenterY() - 100;
+	var explosionWidth = 275;
+	var explosionHeight = 275;
+	
+	this.explosions.addNewSprite(explosionX, explosionY, 2, ExplosionSprite.SLOW);
+
+	//explode ships
+	for(var i = 0; i < this.enemies.sprites.length; i++) {
+		var enemy = this.enemies.sprites[i];
+		if(enemy.sprite != null) {
+			
+			//check collision with player ship
+			if(enemy.checkCollision(explosionX - 25, 
+									explosionY - 25,
+									explosionWidth,
+									explosionHeight)) {
+
+				//damage the enemy
+				if(!enemy.damage(this.player_ship.bombPower)) {
+					this.destroyEnemy(enemy);
+				}
+			}
+		}
+	}
+	//explode asteroids
+	for(var j = 0; j < this.asteroids.sprites.length; j++) {
+			
+			var asteroid = this.asteroids.sprites[j];
+			if(asteroid.sprite != null) {
+				
+				//check collision with bullets
+				if(asteroid.checkCollision(explosionX, 
+										   explosionY,
+										   explosionWidth,
+										   explosionHeight)) {
+
+					
+					if(!asteroid.damage(this.player_ship.bombPower)) {
+						this.destroyAsteroid(asteroid);
+					}
+				}
+			}
+		}
+	
 };
 
 Scroller.prototype.checkCollision = function() {
@@ -441,6 +488,11 @@ Scroller.prototype.checkCollision = function() {
 	 * Check collision with asteroids and player ship
 	 */
 	for(var i = 0; i < this.asteroids.sprites.length; i++) {
+		
+		//skip collision if ship is invulnerable
+		if(this.player_ship.invulnerable)
+			break;
+		
 		var asteroid = this.asteroids.sprites[i];
 		if(asteroid.sprite != null) {
 			//check collision with player ship
@@ -593,7 +645,13 @@ Scroller.prototype.checkCollision = function() {
 										bullet.sprite.position.y, 
 										bullet.sprite.width, 
 										bullet.sprite.height)) {
-											
+					
+					/*
+					 * Normal bullets pass thorugh cloaked ships
+					 * but bombs still hit them
+					 */
+					if(enemy.cloaked  && !bullet.isBomb)
+						continue;					
 					//select the damage
 					var dmg = bullet.isBomb ? this.player_ship.bombPower : this.player_ship.power;
 							

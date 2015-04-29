@@ -229,12 +229,7 @@ EnemySprite.prototype.decloak = function() {
 }
 
 EnemySprite.prototype.checkCollision = function(x, y, width, height) {
-	
-	if(this.cloaked) {
-		//can't shoot the cloaked ships
-		return false;
-	}
-	
+
 	var thisX = this.sprite.position.x;
 	var thisY = this.sprite.position.y;
 	var thisWidth = this.sprite.width;

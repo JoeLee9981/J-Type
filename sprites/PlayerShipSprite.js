@@ -15,7 +15,7 @@ function PlayerShipSprite(sprite) {
 	//rate of fire - decrease for faster
 	this.fireSpeed = 300;
 	//fire speed for bombs
-	this.bombFireSpeed = 3000;
+	this.bombFireSpeed = 1000;
 	
 	//power up will make bullets slightly bigger
 	this.bulletScale = 1;
@@ -37,11 +37,34 @@ function PlayerShipSprite(sprite) {
 	//speed powerups
 	this.speedUp = 1;
 	
+	this.alpha = 1;
+	
 	this.frame = 0;
 	this.last = 0;
+	this.blinkTime = 0;
 }
 
 PlayerShipSprite.prototype.update = function(now, vx, vy) {
+	
+	if(this.invulnerable) {
+		
+		if(now - this.blinkTime > 50) {
+			if(this.alpha == 1)
+				this.alpha = .5;
+			else
+				this.alpha = 1;	
+				
+			this.sprite.alpha = this.alpha;
+			this.blinkTime = now;
+		}
+		
+		if(now - this.resetTime > 2000)	{
+			this.invulnerable = false;
+			this.alpha = 1;
+			this.sprite.alpha = this.alpha;
+			this.blinkTime = 0;
+		}
+	}
 	this.sprite.position.x += vx * this.speed;
 	this.sprite.position.y += vy * this.speed;
 	
@@ -125,7 +148,7 @@ PlayerShipSprite.prototype.speedPowerUp = function() {
 
 PlayerShipSprite.prototype.bombPowerUp = function() {
 	this.bombs++;
-	if(this.bombs == 10 && this.bombPower == 300) {
+	if(this.bombs > 10) {
 		this.bombPower = 600;
 	}
 };
@@ -147,18 +170,18 @@ PlayerShipSprite.prototype.healthPowerUp = function() {
  * 		This should be called after the player dies
  */
 PlayerShipSprite.prototype.reset = function() {
-	//player starts with 3 lives
-	this.lives = 3;
+
 	//power settings of the weapons, increase this when a powerup is picked up
 	this.power = 100;
-	//power of bombs
-	this.bombPower = 300;
+	//reset bomb power only if less than 10
+	if(this.bombs < 10)
+		this.bombPower = 300;
 	//power up will make bullets slightly bigger
 	this.bulletScale = 1;
 	//rate of fire - decrease for faster
 	this.fireSpeed = 300;
 	//fire speed for bombs
-	this.bombFireSpeed = 3000;
+	this.bombFireSpeed = 1000;
 	
 	//speed settings for ship, increase this when a powerup is picked up
 	this.speed = 3;
