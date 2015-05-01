@@ -110,17 +110,22 @@ Scroller.prototype.beginGame = function() {
 		stage.addChild(this.graphics2);
 	}
 	
-	stage.addChild(this.topBar);
-	stage.addChild(this.bottomBar);
-	stage.addChild(this.healthLabel);
-	stage.addChild(this.powerLabel);
-	stage.addChild(this.speedLabel);
-	stage.addChild(this.bombLabel);
-	stage.addChild(this.shipsLabel);
+	this.stage.addChild(this.topBar);
+	this.stage.addChild(this.bottomBar);
+	this.stage.addChild(this.scoreLabel);
+	this.stage.addChild(this.healthLabel);
+	this.stage.addChild(this.powerLabel);
+	this.stage.addChild(this.speedLabel);
+	this.stage.addChild(this.bombLabel);
+	this.stage.addChild(this.shipsLabel);
 	this.startTimer();
 };
 
 Scroller.prototype.displayTitleScreen = function() {
+	// Set booleans
+	playing = true;
+	gameover = false;
+
 	// Display logo.
 	this.jTypeLogo = PIXI.Sprite.fromImage("resources/jtype_logo.png");
 	stage.addChild(this.jTypeLogo);
@@ -182,6 +187,73 @@ Scroller.prototype.displayTitleScreen = function() {
 	stage.addChild(this.scoresButton);
 };
 
+Scroller.prototype.displayGameOverScreen = function() {	
+	/* Button tutorial code: http://www.goodboydigital.com/pixijs/examples/6/ */
+	
+	// Display and set "play" button.
+	var playAgainTexture = PIXI.Texture.fromImage("resources/play_again_button.png");
+	var playAgainTextureHover = PIXI.Texture.fromImage("resources/play_again_button_hover.png");
+	this.playAgainButton = new PIXI.Sprite(playAgainTexture);	
+	this.playAgainButton.position.x = 200;
+	this.playAgainButton.position.y = 300;
+	this.playAgainButton.interactive = true;
+	
+	// Set click/touch and mouseover/out callbacks.
+	this.playAgainButton.mouseup = this.playAgainButton.touchend = function(data){
+		// TODO: Save score somewhere before playing again.
+		titleScreen = true;		
+		playerScore = 0;
+		scroller.resetChildren();
+	}
+
+	this.playAgainButton.mouseover = function(data){
+		this.setTexture(playAgainTextureHover);
+	}
+	
+	this.playAgainButton.mouseout = function(data){
+		this.setTexture(playAgainTexture)
+	}
+	
+	stage.addChild(this.playAgainButton);
+	
+	// Display and set "scores" button.	
+	var scoresTexture = PIXI.Texture.fromImage("resources/scores_button.png");
+	var scoresTextureHover = PIXI.Texture.fromImage("resources/scores_button_hover.png");
+	this.scoresButton = new PIXI.Sprite(scoresTexture);	
+	this.scoresButton.position.x = 200;
+	this.scoresButton.position.y = 400;
+	this.scoresButton.interactive = true;
+	
+	// Set click/touch and mouseover/out callbacks.
+	this.scoresButton.mouseup = this.scoresButton.touchend = function(data){
+		var win = window.open("scores.html", '_blank');
+	}
+
+	this.scoresButton.mouseover = function(data){		
+		this.setTexture(scoresTextureHover);
+	}
+	
+	this.scoresButton.mouseout = function(data){
+		this.setTexture(scoresTexture)
+	}
+	
+	stage.addChild(this.scoresButton);
+};
+
+Scroller.prototype.resetChildren = function() {
+	while(this.stage.children.length > 0){ 
+		var child = this.stage.getChildAt(0);
+		this.stage.removeChild(child);
+	}
+	
+	// Add background back.
+	stage.addChild(this.far);
+	stage.addChild(this.mid);
+	stage.addChild(this.near);
+
+	scroller.displayTitleScreen();
+};
+
 Scroller.prototype.setViewportX = function(viewportX) {
 	this.viewportX = viewportX;
 	this.far.setViewportX(viewportX);
@@ -203,7 +275,8 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		this.updateTimer();
 
 	if(gameover && currTime - this.gameoverTime > 500) {
-		playing = false;
+		playing = false;	
+		this.displayGameOverScreen();
 	}
 	if(currTime -  startTime - 15000 > 1000 && currTime -  startTime - 15000 <= 1400){
 		this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_1, .8);
@@ -329,15 +402,16 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		this.powerUps.update();	
 		this.updateHealth();
 		this.updatePower();
+		this.updateScore();
 	}
 
 	this.setViewportX(newViewportX);
 };
 
-
 Scroller.prototype.drawLabels = function() {
 	// Draw top and bottom bars.
-	this.topBar = PIXI.Sprite.fromImage("resources/top_bar.png");	
+	// Change back to "top_bar.png" if we're not using an actual score.
+	this.topBar = PIXI.Sprite.fromImage("resources/top_bar_with_score.png");	
 	this.topBar.position.x = 0;
 	this.topBar.position.y = 0;
 	
@@ -346,6 +420,11 @@ Scroller.prototype.drawLabels = function() {
 	this.bottomBar.position.y = 565;
 
 	// Draw text.
+	var scoreText = new PIXI.Text("000000", {font: " bold 20px Snippet", fill: "white", align: "right"});
+	this.scoreLabel = scoreText;
+	scoreText.position.x = 425;
+	scoreText.position.y = 9;
+	
 	var healthText = new PIXI.Text("1000 / 1000", {font: " bold 20px Snippet", fill: "white", align: "right"});
 	this.healthLabel = healthText;
 	healthText.position.x = 145;
@@ -373,8 +452,12 @@ Scroller.prototype.drawLabels = function() {
 };
 
 Scroller.prototype.updateHealth = function() {
-	
 	this.healthLabel.setText(this.player_ship.health + " / " + this.player_ship.total_health);
+};
+
+Scroller.prototype.updateScore = function() {
+	// playerScore is global
+	this.scoreLabel.setText(playerScore);
 };
 
 Scroller.prototype.updatePower = function() {
@@ -389,9 +472,13 @@ Scroller.prototype.destroyPlayerShip = function() {
 	this.player_ship.lives--;
 	
 	if(this.player_ship.lives == 0) {
-		//gameover = true;
-		//this.gameoverTime = new Date().getTime();
-		//this.stage.removeChild(this.player_ship.sprite);
+		gameover = true;
+		
+		// Reset time and lives
+		this.gameoverTime = new Date().getTime();
+		this.player_ship.lives = 3;
+		
+		this.stage.removeChild(this.player_ship.sprite);
 	}
 	
 	this.shipsLabel.setText("Ships: " + this.player_ship.lives);
@@ -405,21 +492,24 @@ Scroller.prototype.destroyPlayerShip = function() {
 
 Scroller.prototype.destroyAsteroid = function(asteroid) {
 	//returns health, so on a 0 we need to do an explosion
-	var scale = 1;
+	var scale = 5;
 	if(asteroid.type == SpriteType.ASTEROID_SMALL) {
 		scale = .35;
+		playerScore += Score.ASTEROID_SMALL;
 	}
 	else if(asteroid.type == SpriteType.ASTEROID_MID) {
 		scale = .6;
 		//medium asteroids split into two small when destroyed
 		this.asteroids.addNewSpriteOvrrideXAndY(SpriteType.ASTEROID_SMALL, asteroid.sprite.position.x, asteroid.sprite.position.y, 0);
 		this.asteroids.addNewSpriteOvrrideXAndY(SpriteType.ASTEROID_SMALL, asteroid.sprite.position.x, asteroid.sprite.position.y, Math.floor(Math.random() * 2) + 2);
+		playerScore += Score.ASTEROID_MID;
 	}
 	else if(asteroid.type == SpriteType.ASTEROID_LARGE) {
 		//large asteroids split into a medium and two small when destroyed
 		this.asteroids.addNewSpriteOvrrideXAndY(SpriteType.ASTEROID_MID, asteroid.sprite.position.x, asteroid.sprite.position.y, 0);
 		this.asteroids.addNewSpriteOvrrideXAndY(SpriteType.ASTEROID_SMALL, asteroid.sprite.position.x, asteroid.sprite.position.y, 2);
 		this.asteroids.addNewSpriteOvrrideXAndY(SpriteType.ASTEROID_SMALL, asteroid.sprite.position.x, asteroid.sprite.position.y, 3);
+		playerScore += Score.ASTEROID_LARGE;
 	}
 	this.explosions.addNewSprite(asteroid.sprite.position.x - asteroid.sprite.width / 2, asteroid.sprite.position.y - asteroid.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 };
@@ -430,7 +520,13 @@ Scroller.prototype.destroyEnemy = function(enemy) {
 	var type = Math.floor(Math.random() * 5);
 	if(enemy.type == EnemySprite.SPECIAL) {
 		this.powerUps.addNewSprite(type, enemy.sprite.position.x, enemy.sprite.position.y);
+		playerScore += Score.ENEMY_SPECIAL;
 	}
+	else if(enemy.type == EnemySprite.MOTHER_SHIP) {
+		playerScore += Score.MOTHER_SHIP;
+	}
+	else 
+		playerScore += Score.ENEMY_NORMAL;
 	this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 };
 
@@ -674,7 +770,7 @@ Scroller.prototype.checkCollision = function() {
 Scroller.prototype.startTimer = function() {	
 	var timerText = new PIXI.Text("00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
 	this.timeLabel = timerText;
-	timerText.position.x = 650;
+	timerText.position.x = 675;
 	timerText.position.y = 9;
 	this.stage.addChild(timerText);
 	

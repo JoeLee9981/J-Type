@@ -4,12 +4,12 @@ var vx = 0;
 var vy = 0;
 var firing = 0;
 var fire_bomb = 0;
+var playerScore = 0;
 
 debug = false;
 playing = true;
 gameover = false;
 titleScreen = true;
-
 interactive = true;
 
 //making this globally accessable so that enemy ships can shoot
@@ -39,8 +39,10 @@ Main.prototype.update = function() {
 		var now = new Date().getTime(); //current time in ms used to control animation speeds
 		
 		this.scroller.moveViewportXBy(now, Main.SCROLL_SPEED);
-		this.renderer.render(this.stage);
 	}
+	
+	this.renderer.render(this.stage);
+
 	requestAnimFrame(this.update.bind(this));
 };
 
@@ -58,8 +60,12 @@ Main.prototype.loadSpriteSheet = function() {
 						 "resources/KB_Explosion_frame5.png", "resources/KB_Laserbomb_Aqua.png",
 						 "resources/KB_Laserbomb_Red.png", "resources/KB_Laserbullets_Aqua.png",
 						 "resources/credits.png", "resources/jtype_logo.png",
-						 "resources/play_button.png", "resources/scores_button.png",
-						 "resources/KB_EnemyBabyShip_Red.png", "resources/KB_Laserbullets_Purple.png" ];
+						 "resources/play_button.png", "resources/play_button_hover.png", 
+						 "resources/scores_button.png", "resources/scores_button_hover.png",
+						 "resources/top_bar.png", "resources/top_bar_with_score.png", 
+						 "resources/bottom_bar.png", "resources/play_again_button.png", 
+						 "resources/KB_EnemyBabyShip_Red.png", "resources/play_again_button_hover.png", 
+						 "resources/KB_Laserbullets_Purple.png", "resources/game_over.png" ];
 	loader = new PIXI.AssetLoader(assetsToLoad);
 	loader.onComplete = this.spriteSheetLoaded.bind(this);
 	loader.load();

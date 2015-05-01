@@ -1,5 +1,4 @@
 function PowerUpSprite() {
-
 	this.sprite = null;
 	this.speed = 1.5;
 	this.destroy = false;
@@ -40,6 +39,7 @@ PowerUpSprite.prototype.doPowerUp = function(player) {
 		player.bombPowerUp();
 	}
 	
+	playerScore += Score.POWER_UP;
 	this.destroy = true;
 };
 
