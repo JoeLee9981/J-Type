@@ -1,3 +1,7 @@
+/**
+ *	Represents the sprite of a bullet 
+ * @param {Object} type
+ */
 function BulletSprite(type) {
 	this.type   = type;
 	this.sprite = null;
@@ -8,12 +12,18 @@ function BulletSprite(type) {
 	this.scale = 1;
 }
 
+/**
+ *	Constants to represent which type of bullet 
+ */
 BulletSprite.ENEMY_BULLET = 0;
 BulletSprite.PROTAG_BULLET = 1;
 
 //TODO: Change this to the correct width.
 BulletSprite.WIDTH = 64;
 
+/**
+ * Update the bullet in the render loop 
+ */
 BulletSprite.prototype.update = function() {
 	
 	//set the local speed for bomb or bullet
@@ -38,6 +48,14 @@ BulletSprite.prototype.update = function() {
 	}
 };
 
+/**
+ *	set the sprite and set the values needed for the bullet 
+ * @param {Object} sprite
+ * @param {Object} start_x
+ * @param {Object} start_y
+ * @param {Object} scale
+ * @param {Object} isBomb
+ */
 BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, isBomb) {
 	this.sprite = sprite;
 	this.scale = scale;
@@ -60,6 +78,9 @@ BulletSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, isB
 	}
 }; 
 
+/**
+ *	Reset a bullet to it's default values 
+ */
 BulletSprite.prototype.reset = function() {
 	this.destroy = false;
 	
@@ -71,6 +92,9 @@ BulletSprite.prototype.reset = function() {
 	this.scale = 1;
 };
 
+/**
+ *	Find th center position of the bullet 
+ */
 BulletSprite.prototype.getCenterX = function() {
 	return this.sprite.position.x + (this.sprite.width / 2);
 }

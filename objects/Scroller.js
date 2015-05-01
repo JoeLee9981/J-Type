@@ -42,6 +42,10 @@ function Scroller(stage) {
 	stage.addChild(this.mid);
 	stage.addChild(this.near);
 	
+	this.displayTitleScreen();
+}
+
+Scroller.prototype.setStage = function() {
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
 	
@@ -84,7 +88,6 @@ function Scroller(stage) {
 	this.lastShipTime = 0;
 	this.shipPatterns = 0;
 	this.lastBomb = 0;
-	this.displayTitleScreen();
 }
 
 Scroller.prototype.beginGame = function() {
@@ -122,6 +125,8 @@ Scroller.prototype.beginGame = function() {
 };
 
 Scroller.prototype.displayTitleScreen = function() {
+	//set the stage
+	this.setStage();
 	// Set booleans
 	playing = true;
 	gameover = false;

@@ -1,3 +1,6 @@
+/**
+ *	Power Up Sprite is the sprite wrapper class for power ups 
+ */
 function PowerUpSprite() {
 	this.sprite = null;
 	this.speed = 1.5;
@@ -7,12 +10,20 @@ function PowerUpSprite() {
 	
 }
 
+/**
+ *	Update is responsible for updating position during the render loop 
+ */
 PowerUpSprite.prototype.update = function() {
 	this.sprite.position.x -= this.speed;
 	if(this.sprite.position.x + this.sprite.width < 0)
 		this.destroy = true;
 };
 
+/**
+ *	This is used to set the sprite. It will also set some default information 
+ * @param {Object} sprite
+ * @param {Object} type
+ */
 PowerUpSprite.prototype.setSprite = function(sprite, type) {
 	this.destroy = false;
 	this.type = type;
@@ -20,6 +31,11 @@ PowerUpSprite.prototype.setSprite = function(sprite, type) {
 	this.sprite.setTexture(this.textures[type]);
 };
 
+/**
+ *	Performs the expected operations on a player when they pick
+ * 		up a power up 
+ * @param {Object} player - the player's ship
+ */
 PowerUpSprite.prototype.doPowerUp = function(player) {
 	console.log("Adding powerup to player ship");
 	
@@ -43,6 +59,9 @@ PowerUpSprite.prototype.doPowerUp = function(player) {
 	this.destroy = true;
 };
 
+/*
+ * Enum values to represent different power ups
+ */
 PowerUpSprite.BOMB_POWERUP = 0;
 PowerUpSprite.EXTRA_LIFE_POWERUP = 1;
 PowerUpSprite.HEALTH_POWERUP = 2;

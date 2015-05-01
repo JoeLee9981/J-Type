@@ -1,3 +1,6 @@
+/**
+ *	wraps the player's ship sprite, used to control changes made to the sprite 
+ */
 function PlayerShipSprite(sprite) {
 	this.texture1 = PIXI.Texture.fromFrame("resources/KB_ship.png");
 	this.texture2 = PIXI.Texture.fromFrame("resources/KB_shipfinwithflames.png");
@@ -44,8 +47,12 @@ function PlayerShipSprite(sprite) {
 	this.blinkTime = 0;
 }
 
+/**
+ *	Update will update the ship during a frame in the render loop 
+ */
 PlayerShipSprite.prototype.update = function(now, vx, vy) {
 	
+	//player has died and is invul, we need to blink to represent this
 	if(this.invulnerable) {
 		
 		if(now - this.blinkTime > 50) {
@@ -98,6 +105,9 @@ PlayerShipSprite.prototype.update = function(now, vx, vy) {
 	}
 }
 
+/**
+ * 	Add damage to the players ship, returns 0 if they are dead
+ */
 PlayerShipSprite.prototype.damage = function(damage) {
 	this.health -= damage;
 	if(this.health < 0) {
@@ -106,6 +116,10 @@ PlayerShipSprite.prototype.damage = function(damage) {
 	return 1;
 }
 
+/**
+ *	Check collision against the player ship. This uses two bounding boxes.
+ * 		The first around the sails, the second around the body 
+ */
 PlayerShipSprite.prototype.checkCollision = function(x, y, width, height) {
 	
 	if(this.invulnerable)
@@ -126,6 +140,9 @@ PlayerShipSprite.prototype.checkCollision = function(x, y, width, height) {
 	return sails || body;
 }
 
+/**
+ *	Add a shoot power up to the player 
+ */
 PlayerShipSprite.prototype.shootPowerUp = function() {
 	if(this.powerUp < 6) {
 		this.powerUp++;
@@ -139,6 +156,9 @@ PlayerShipSprite.prototype.shootPowerUp = function() {
 	}
 };
 
+/**
+ *	Add a speed power up to the player 
+ */
 PlayerShipSprite.prototype.speedPowerUp = function() {
 	if(this.speed < 4) {
 		this.speed += .25;
@@ -146,13 +166,20 @@ PlayerShipSprite.prototype.speedPowerUp = function() {
 	}
 };
 
+/**
+ *	Add a bomb power up to the player 
+ */
 PlayerShipSprite.prototype.bombPowerUp = function() {
 	this.bombs++;
+	//if the player obtains more than 10 bombs, they get plasma bombs
 	if(this.bombs > 10) {
 		this.bombPower = 600;
 	}
 };
 
+/**
+ *	Add a health power up to the player 
+ */
 PlayerShipSprite.prototype.healthPowerUp = function() {
 	this.healthUp++;
 	
@@ -165,7 +192,7 @@ PlayerShipSprite.prototype.healthPowerUp = function() {
 		this.health = this.total_health;
 };
 
-/*
+/**
  * Reset the default settings of the player's ship
  * 		This should be called after the player dies
  */
@@ -202,6 +229,10 @@ PlayerShipSprite.prototype.reset = function() {
 	this.frame = 0;
 	this.last = 0;
 };
+
+/*
+ * 	This section determines the portions of the bounding box for the sails and body
+ */
 
 PlayerShipSprite.prototype.getSailsX = function() {
 	return this.sprite.position.x + this.sprite.width / 2.5;

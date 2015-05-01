@@ -1,4 +1,6 @@
-
+/**
+ * 	Represents the wrapper of an asteroid sprite
+ */
 function AsteroidSprite(type) {
 	this.type   = type;
 	this.sprite = null;
@@ -29,9 +31,12 @@ function AsteroidSprite(type) {
 	this.textures = [ PIXI.Texture.fromFrame("resources/KB_lilAsteroid.png"), PIXI.Texture.fromFrame("resources/KB_MidAsteroid.png"), PIXI.Texture.fromFrame("resources/KB_BigAsteroid.png") ];
 }
 
-//TODO: Change this to the correct width.
+//base width
 AsteroidSprite.WIDTH = 64;
 
+/**
+ *	Update the asteroid in the render loop 
+ */
 AsteroidSprite.prototype.update = function() {
 	this.sprite.position.y += this.patterns[this.pattern].dy * this.speed;
 	this.sprite.position.x += this.patterns[this.pattern].dx * this.speed;
@@ -47,6 +52,9 @@ AsteroidSprite.prototype.update = function() {
 	this.sprite.rotation += this.rotation * this.rotationDir;
 }
 
+/**
+ *	Damage an asteroid, return 0 if destroyed 
+ */
 AsteroidSprite.prototype.damage = function(damage) {
 	this.health -= damage;
 	
@@ -73,7 +81,7 @@ AsteroidSprite.prototype.setSprite = function(sprite, pattern, type) {
 	this.sprite.anchor.y = 0.5;
 }
 
-/*
+/**
  *	Use this function to set the sprite at a specified x and y position instead of the default in the pattern
  */
 AsteroidSprite.prototype.setSpriteOverrideXAndY = function(sprite, start_x, start_y, pattern, type) {
@@ -108,10 +116,16 @@ AsteroidSprite.prototype.checkCollision = function(x, y, width, height) {
 	return !(thisX > (x + width) || (thisX + thisWidth) < x || thisY > (y + height) || (thisY + thisHeight) < y);
 }
 
+/**
+ *	Get the center of the asteroid 
+ */
 AsteroidSprite.prototype.getCenterX = function() {
 	return this.sprite.position.x;
 }
 
+/**
+ *	Get the center of the asteroid 
+ */
 AsteroidSprite.prototype.getCenterY = function() {
 	return this.sprite.position.y;
 } 

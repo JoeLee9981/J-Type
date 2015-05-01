@@ -1,15 +1,28 @@
+/**
+ *	A pool of pre-instantiated enemy sprites 
+ */
 function EnemySpritesPool() {
 	this.createEnemies();
 }
 
+/**
+ *	Get an enemy from the pool 
+ */
 EnemySpritesPool.prototype.borrowEnemies = function() {
 	return this.enemies.shift();
 };
 
+/**
+ *	Return an enemy to the pool 
+ * @param {Object} sprite
+ */
 EnemySpritesPool.prototype.returnEnemies = function(sprite) {
 	this.enemies.push(sprite);
 };
 
+/**
+ *	Creates enemies and adds them to the pool 
+ */
 EnemySpritesPool.prototype.createEnemies = function() {
 	this.enemies = [];
 
@@ -18,6 +31,11 @@ EnemySpritesPool.prototype.createEnemies = function() {
 	this.shuffle(this.enemies);
 };
 
+/**
+ *	Add enemy sprites into the pool 
+ * @param {Object} amount
+ * @param {Object} frameId
+ */
 EnemySpritesPool.prototype.addEnemySprites = function(amount, frameId) {
 	for (var i = 0; i < amount; i++)
 	{
@@ -26,6 +44,10 @@ EnemySpritesPool.prototype.addEnemySprites = function(amount, frameId) {
 	}
 };
 
+/**
+ *	Shuffles enemy sprites in the pool 
+ * @param {Object} array
+ */
 EnemySpritesPool.prototype.shuffle = function(array) {
 	var len = array.length;
 	var shuffles = len * 3;

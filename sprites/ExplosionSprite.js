@@ -1,15 +1,21 @@
-
+/**
+ *	Representation of an explosion sprite - This is animated 
+ */
 function ExplosionSprite() {
 
 	this.sprite = null;
 	this.destroy = false;
 	this.frame = 0;
+	//textures available for animation
 	this.textures = [ PIXI.Texture.fromFrame("resources/KB_Explosion_frame1.png"), PIXI.Texture.fromFrame("resources/KB_Explosion_frame2.png"), 
 					  PIXI.Texture.fromFrame("resources/KB_Explosion_frame3.png"), PIXI.Texture.fromFrame("resources/KB_Explosion_frame4.png"),
 					  PIXI.Texture.fromFrame("resources/KB_Explosion_frame5.png")
 					];
 }
 
+/**
+ *	Update the explosion in the render loop 
+ */
 ExplosionSprite.prototype.update = function(currTime) {
 	if(currTime - this.borrowed >= 100 / this.speed) {
 		
@@ -26,7 +32,7 @@ ExplosionSprite.prototype.update = function(currTime) {
 }
 
 
-/*
+/**
  *	Use this function to set the sprite at a specified x and y position instead of the default in the pattern
  */
 ExplosionSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, speed) {
@@ -45,12 +51,18 @@ ExplosionSprite.prototype.setSprite = function(sprite, start_x, start_y, scale, 
 	this.destroy = false;
 }
 
+/**
+ *	Reset the scale of an explosion 
+ */
 ExplosionSprite.prototype.resetScale = function() {
 	//if this has been scaled before, revert
 	this.sprite.width /= this.scale;
 	this.sprite.height /= this.scale;
 }
 
+/**
+ *	Constants to represent explosion speeds 
+ */
 ExplosionSprite.SLOW = .5;
 ExplosionSprite.NORMAL = 1;
 ExplosionSprite.FAST = 2;

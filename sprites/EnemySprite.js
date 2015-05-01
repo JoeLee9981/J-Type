@@ -1,3 +1,6 @@
+/**
+ *	This represents an enemy sprite - baby, special or mother ship 
+ */
 function EnemySprite() {
 
 	this.sprite = null;
@@ -29,6 +32,9 @@ function EnemySprite() {
 	this.textures = [ PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyMotherShip.png"), PIXI.Texture.fromFrame("resources/KB_EnemyBabyShip_Red.png")];
 }
 
+/**
+ *	Update the sprite in the render loop 
+ */
 EnemySprite.prototype.update = function(currTime) {
 	
 	var now = new Date().getTime();
@@ -122,6 +128,9 @@ EnemySprite.prototype.update = function(currTime) {
 	
 }
 
+/**
+ *	Damage the enemy sprite 
+ */
 EnemySprite.prototype.damage = function(damage) {
 	this.health -= damage;
 	
@@ -209,6 +218,9 @@ EnemySprite.prototype.setSpriteOverrideXAndY = function(sprite, start_x, start_y
 	
 }
 
+/**
+ *	reset the scale of the ship 
+ */
 EnemySprite.prototype.resetScale = function() {
 	//if this has been scaled before, revert
 	this.sprite.width /= this.scale;
@@ -218,16 +230,29 @@ EnemySprite.prototype.resetScale = function() {
 	this.decloak();
 }
 
+/**
+ *	cloak the ship 
+ */
 EnemySprite.prototype.cloak = function() {
 	this.cloaked = true;
 	this.sprite.alpha = .25;
 }
 
+/**
+ *	decloak the ship 
+ */
 EnemySprite.prototype.decloak = function() {
 	this.cloaked = false;
 	this.sprite.alpha = 1;
 }
 
+/**
+ *	Check collision with an enemy sprite 
+ * @param {Object} x
+ * @param {Object} y
+ * @param {Object} width
+ * @param {Object} height
+ */
 EnemySprite.prototype.checkCollision = function(x, y, width, height) {
 
 	var thisX = this.sprite.position.x;
@@ -236,6 +261,8 @@ EnemySprite.prototype.checkCollision = function(x, y, width, height) {
 	var thisHeight = this.sprite.height;
 	return !(thisX > (x + width) || (thisX + thisWidth) < x || thisY > (y + height) || (thisY + thisHeight) < y);
 }
+
+//Constants used to represent the enemy ship type and movement pattern
 
 EnemySprite.BABY = 0;
 EnemySprite.MOTHER_SHIP = 1;

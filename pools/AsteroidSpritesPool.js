@@ -1,15 +1,28 @@
+/**
+ *	A Pool of instantiated asteroid sprites to be used 
+ */
 function AsteroidSpritesPool() {
 	this.createAsteroids();
 }
 
+/**
+ *	Gets an asteroid from the pool 
+ */
 AsteroidSpritesPool.prototype.borrowAsteroids = function() {
 	return this.asteroids.shift();
 };
 
+/**
+ *	Return an asteroid to the pool 
+ * @param {Object} sprite
+ */
 AsteroidSpritesPool.prototype.returnAsteroids = function(sprite) {
 	this.asteroids.push(sprite);
 };
 
+/**
+ *	Creates asteroids and adds them to the pool 
+ */
 AsteroidSpritesPool.prototype.createAsteroids = function() {
 	this.asteroids = [];
 
@@ -21,6 +34,11 @@ AsteroidSpritesPool.prototype.createAsteroids = function() {
 	this.shuffle(this.asteroids);
 };
 
+/**
+ *	Adds asteroid sprites to the pool 
+ * @param {Object} amount
+ * @param {Object} frameId
+ */
 AsteroidSpritesPool.prototype.addAsteroidSprites = function(amount, frameId) {
 	for (var i = 0; i < amount; i++)
 	{
@@ -29,6 +47,10 @@ AsteroidSpritesPool.prototype.addAsteroidSprites = function(amount, frameId) {
 	}
 };
 
+/**
+ *	Shuffles the pool of asteroids 
+ * @param {Object} array
+ */
 AsteroidSpritesPool.prototype.shuffle = function(array) {
 	var len = array.length;
 	var shuffles = len * 3;

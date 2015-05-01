@@ -1,3 +1,6 @@
+/**
+ *	Values used to identify sprite types 
+ */
 function SpriteType() {}
 
 SpriteType.ASTEROID_SMALL = 0;
