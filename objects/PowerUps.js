@@ -1,3 +1,6 @@
+/**
+ *	Power Up manager object that controls the drawing pooling and removing of power ups 
+ */
 function PowerUps() {
 	PIXI.DisplayObjectContainer.call(this);
 
@@ -7,10 +10,13 @@ function PowerUps() {
 	this.MAX_POWERUPS = 20;
 	this.addPowerUpsToMap();
 }
-
+//constructor
 PowerUps.constructor = PowerUps;
 PowerUps.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
+/**
+ * instantiate and add a sprite 
+ */
 PowerUps.prototype.addSprite = function() {
 	var newSprite = new PowerUpSprite();
 	this.sprites.push(newSprite);
@@ -67,10 +73,16 @@ PowerUps.prototype.addNewSprite = function(spriteType, start_x, start_y) {
 	}
 };
 
+/**
+ *	Borrow a sprite from the pool 
+ */
 PowerUps.prototype.borrowPowerUpSprite = function() {
 	return this.pool.borrowPowerUps();
 };
 
+/**
+ *	Return the power up to the pool 
+ */
 PowerUps.prototype.returnPowerUpSprite = function(newSprite) {
 	return this.pool.returnPowerUps(newSprite);
 };

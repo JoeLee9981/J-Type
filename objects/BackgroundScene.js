@@ -2,6 +2,9 @@
 sWidth = 800;
 sHeight = 600;
 
+/**
+ *	Controls the background scrolling screen. This is made up of 3 separate screens scrolling at different speeds 
+ */
 function BackgroundScene(texture, width, height, startX, startY, deltax) {
 	PIXI.TilingSprite.call(this, texture, width, height);
 
@@ -18,7 +21,7 @@ function BackgroundScene(texture, width, height, startX, startY, deltax) {
 	this.width = width;
 	this.height = height;
 }
-
+//constructor an dmethods
 BackgroundScene.constructor = BackgroundScene;
 BackgroundScene.prototype = Object.create(PIXI.TilingSprite.prototype);
 

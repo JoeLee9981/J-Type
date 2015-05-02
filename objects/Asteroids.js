@@ -81,6 +81,9 @@ Asteroids.prototype.addNewSprite = function(spriteType, pattern) {
 	}
 };
 
+/*
+ * Add a new sprite overriding it's start x and y position
+ */
 Asteroids.prototype.addNewSpriteOvrrideXAndY = function(spriteType, start_x, start_y, pattern) {
 	//scan for open spot in the array to add our new asteroid
 	for(var i = 0; i < this.MAX_ASTEROIDS; i++) {

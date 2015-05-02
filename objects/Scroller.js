@@ -2,6 +2,9 @@
 var startTime;
 var player;
 
+/**
+ *	Constructor creates the main controls for the game. 
+ */
 function Scroller(stage) {
 	
 	this.stage = stage;
@@ -45,6 +48,10 @@ function Scroller(stage) {
 	this.displayTitleScreen();
 }
 
+/**
+ *	Set up the stage for the controller
+ * 		add all sprites and manager objects 
+ */
 Scroller.prototype.setStage = function() {
 	// Interactive Sprites
 	this.asteroids = new Asteroids();
@@ -90,6 +97,9 @@ Scroller.prototype.setStage = function() {
 	this.lastBomb = 0;
 }
 
+/**
+ *	Begin the game by adding game objects to stage and removing title 
+ */
 Scroller.prototype.beginGame = function() {
 	titleScreen = false;
 
@@ -124,6 +134,9 @@ Scroller.prototype.beginGame = function() {
 	this.startTimer();
 };
 
+/**
+ *	Dispaly the title screen 
+ */
 Scroller.prototype.displayTitleScreen = function() {
 	//set the stage
 	this.setStage();
@@ -192,6 +205,9 @@ Scroller.prototype.displayTitleScreen = function() {
 	stage.addChild(this.scoresButton);
 };
 
+/**
+ *	Display the game over screen 
+ */
 Scroller.prototype.displayGameOverScreen = function() {	
 	/* Button tutorial code: http://www.goodboydigital.com/pixijs/examples/6/ */
 	
@@ -245,6 +261,9 @@ Scroller.prototype.displayGameOverScreen = function() {
 	stage.addChild(this.scoresButton);
 };
 
+/**
+ *	Resetst he children on the stage 
+ */
 Scroller.prototype.resetChildren = function() {
 	while(this.stage.children.length > 0){ 
 		var child = this.stage.getChildAt(0);
@@ -259,6 +278,9 @@ Scroller.prototype.resetChildren = function() {
 	scroller.displayTitleScreen();
 };
 
+/**
+ *	Sets the viewport by x 
+ */
 Scroller.prototype.setViewportX = function(viewportX) {
 	this.viewportX = viewportX;
 	this.far.setViewportX(viewportX);
@@ -266,10 +288,16 @@ Scroller.prototype.setViewportX = function(viewportX) {
 	this.near.setViewportX(viewportX);
 };
 
+/**
+ *	Returns the x of the viewport 
+ */
 Scroller.prototype.getViewportX = function() {
 	return this.viewportX;
 };
 
+/**
+ *	Moves the viewport by x and reupdates the entire stage 
+ */
 Scroller.prototype.moveViewportXBy = function(currTime, units) {
 
 	if(!this.speed){
@@ -413,6 +441,9 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 	this.setViewportX(newViewportX);
 };
 
+/**
+ *	Draws the labels on the game screen (menu bars on top and bottom) 
+ */
 Scroller.prototype.drawLabels = function() {
 	// Draw top and bottom bars.
 	// Change back to "top_bar.png" if we're not using an actual score.
@@ -456,15 +487,24 @@ Scroller.prototype.drawLabels = function() {
 	this.bombLabel.position.y = 570;
 };
 
+/**
+ *	Updates the health label 
+ */
 Scroller.prototype.updateHealth = function() {
 	this.healthLabel.setText(this.player_ship.health + " / " + this.player_ship.total_health);
 };
 
+/**
+ *	Updates the score label 
+ */
 Scroller.prototype.updateScore = function() {
 	// playerScore is global
 	this.scoreLabel.setText(playerScore);
 };
 
+/**
+ *	Updates the power label 
+ */
 Scroller.prototype.updatePower = function() {
 	
 	this.powerLabel.setText("x " + this.player_ship.powerUp);
@@ -473,6 +513,9 @@ Scroller.prototype.updatePower = function() {
 	this.shipsLabel.setText("x " + this.player_ship.lives);
 };
 
+/**
+ *	Destroys the player ship, adds explosion animation and resets it 
+ */
 Scroller.prototype.destroyPlayerShip = function() {
 	this.player_ship.lives--;
 	
@@ -495,9 +538,12 @@ Scroller.prototype.destroyPlayerShip = function() {
 	this.player_ship.resetTime = new Date().getTime();
 };
 
+/**
+ *	Destroys an asteroid and animates the explosion 
+ */
 Scroller.prototype.destroyAsteroid = function(asteroid) {
 	//returns health, so on a 0 we need to do an explosion
-	var scale = 5;
+	var scale = 1;
 	if(asteroid.type == SpriteType.ASTEROID_SMALL) {
 		scale = .35;
 		playerScore += Score.ASTEROID_SMALL;
@@ -519,6 +565,9 @@ Scroller.prototype.destroyAsteroid = function(asteroid) {
 	this.explosions.addNewSprite(asteroid.sprite.position.x - asteroid.sprite.width / 2, asteroid.sprite.position.y - asteroid.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 };
 
+/**
+ *	Destroys an enemy and plays the animation explosion 
+ */
 Scroller.prototype.destroyEnemy = function(enemy) {
 	//returns health, so on a 0 we need to do an explosion
 	var scale = .6;
@@ -535,6 +584,9 @@ Scroller.prototype.destroyEnemy = function(enemy) {
 	this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 };
 
+/**
+ *	Explodes a bomb, and damages all objects in the area 
+ */
 Scroller.prototype.explodeBomb = function(bomb) {
 	var explosionX = bomb.getCenterX() - 100;
 	var explosionY = bomb.getCenterY() - 100;
@@ -583,6 +635,9 @@ Scroller.prototype.explodeBomb = function(bomb) {
 	
 };
 
+/**
+ *	Checks collision for all objects on the stage 
+ */
 Scroller.prototype.checkCollision = function() {
 	
 	/*
@@ -772,6 +827,9 @@ Scroller.prototype.checkCollision = function() {
 	}
 };
 
+/**
+ *	Starts the main game timer 
+ */
 Scroller.prototype.startTimer = function() {	
 	var timerText = new PIXI.Text("00:00:00", {font: " bold 20px Snippet", fill: "white", align: "right"});
 	this.timeLabel = timerText;
@@ -782,6 +840,9 @@ Scroller.prototype.startTimer = function() {
 	startTime = new Date().getTime();
 };
 
+/**
+ *	Updates the timer label on the screen 
+ */
 Scroller.prototype.updateTimer = function() {
 	var d = new Date();
 	var currTime = d.getTime();

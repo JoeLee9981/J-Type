@@ -6,6 +6,7 @@ var firing = 0;
 var fire_bomb = 0;
 var playerScore = 0;
 
+//variables used to control game modes
 debug = false;
 playing = true;
 gameover = false;
@@ -17,6 +18,9 @@ var stage;
 var bullets;
 var scroller;
 
+/**
+ *	Main method, this triggers everything 
+ */
 function Main() {
 	
 	this.stage = new PIXI.Stage(0x1D163B, interactive);
@@ -30,9 +34,12 @@ function Main() {
 	this.loadSpriteSheet();
 }
 
-// TODO: Gradually increment scroll speed.
+//Gradually increment scroll speed.
 Main.SCROLL_SPEED = 5;
 
+/**
+ *	Update the animation frame of the game 
+ */
 Main.prototype.update = function() {
 	
 	if(playing) {
@@ -46,6 +53,9 @@ Main.prototype.update = function() {
 	requestAnimFrame(this.update.bind(this));
 };
 
+/**
+ *	Responsible for loading the sprite sheets 
+ */
 Main.prototype.loadSpriteSheet = function() {
 	var assetsToLoad = [ "resources/jtype-bg-far.png", "resources/jtype-bg-mid.png",
 						 "resources/jtype-bg-near.png", "resources/KB_Laserbullets_Red.png",
@@ -157,6 +167,7 @@ function setupKeyEvents() {
 	}
 }
 
+//keyboard management
 function keyboard(keyCode) {
   var key = {};
   key.code = keyCode;

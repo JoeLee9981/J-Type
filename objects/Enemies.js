@@ -1,3 +1,6 @@
+/**
+ *	Wraps an enemy pool and controls the borrowing, returning and management of the enemies 
+ */
 function Enemies() {
 	PIXI.DisplayObjectContainer.call(this);
 
@@ -11,7 +14,7 @@ function Enemies() {
 	this.viewportX = 0;
 	this.viewportSpriteX = 0;
 }
-
+//constructor
 Enemies.constructor = Enemies;
 Enemies.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
@@ -68,6 +71,14 @@ Enemies.prototype.addNewSprite = function(spriteType, pattern, scale) {
 	}
 };
 
+/**
+ *	Add a new sprite at a specific x and y position 
+ * @param {Object} spriteType
+ * @param {Object} start_x
+ * @param {Object} start_y
+ * @param {Object} pattern
+ * @param {Object} scale
+ */
 Enemies.prototype.addNewSpriteOverrideXAndY = function(spriteType, start_x, start_y, pattern, scale) {
 	//scan for open spot in the array to add our new enemy
 	for(var i = 0; i < this.MAX_ENEMIES; i++) {
@@ -84,19 +95,35 @@ Enemies.prototype.addNewSpriteOverrideXAndY = function(spriteType, start_x, star
 	}
 };
 
+/**
+ *	Adds an instantiated sprite 
+ * @param {Object} spriteType
+ */
 Enemies.prototype.addSprite = function(spriteType) {
 	var newSprite = new EnemySprite(spriteType);
 	this.sprites.push(newSprite);
 };
 
+/**
+ *	Borrows a sprite from the pool 
+ * @param {Object} spriteType
+ */
 Enemies.prototype.borrowEnemySprite = function(spriteType) {
 	return this.pool.borrowEnemies();
 };
 
+/**
+ *	returns an enemy sprite to the pool 
+ * @param {Object} spriteType
+ * @param {Object} newSprite
+ */
 Enemies.prototype.returnEnemySprite = function(spriteType, newSprite) {
 	return this.pool.returnEnemies(newSprite);
 };
 
+/**
+ *	Maps enemies into this manager object 
+ */
 Enemies.prototype.addEnemiesToMap = function() {
 	for(var i = 0; i < this.MAX_ENEMIES; i++) {
 		this.addSprite()
