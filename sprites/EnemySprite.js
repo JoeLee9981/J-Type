@@ -173,7 +173,13 @@ EnemySprite.prototype.setSprite = function(sprite, pattern, type, scale) {
 	this.destroy = false;
 	this.type   = type;
 	this.scale = scale;
-	this.health = 100; // 100 for little, 200 for mid, 300 for big
+	
+	if(type == EnemySprite.MOTHER_SHIP) {
+		this.health = 2000;
+	}
+	else {
+		this.health = 100;
+	}
 	this.power = this.health * 4; // 400 for little, 800 for medium, 1200 for big
 	this.pattern = pattern;
 	this.borrowed = new Date().getTime(); //clock when we created (this is temp until we can detect bounds)
@@ -212,7 +218,14 @@ EnemySprite.prototype.setSprite = function(sprite, pattern, type, scale) {
 EnemySprite.prototype.setSpriteOverrideXAndY = function(sprite, start_x, start_y, pattern, type, scale) {
 	this.destroy = false;
 	this.type   = type;
-	this.health = 100; // 100 for little, 200 for mid, 300 for big
+	
+	if(type == EnemySprite.MOTHER_SHIP) {
+		this.health = 2000;
+	}
+	else {
+		this.health = 100;
+	}
+	
 	this.power = this.health * 4; // 400 for little, 800 for medium, 1200 for big
 	this.pattern = pattern;
 	this.borrowed = new Date().getTime(); //clock when we created (this is temp until we can detect bounds)

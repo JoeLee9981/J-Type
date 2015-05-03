@@ -586,13 +586,17 @@ Scroller.prototype.destroyEnemy = function(enemy) {
 	if(enemy.type == EnemySprite.SPECIAL) {
 		this.powerUps.addNewSprite(type, enemy.sprite.position.x, enemy.sprite.position.y);
 		playerScore += Score.ENEMY_SPECIAL;
+		this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
 	}
 	else if(enemy.type == EnemySprite.MOTHER_SHIP) {
 		playerScore += Score.MOTHER_SHIP;
+		this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, 3, ExplosionSprite.NORMAL);
 	}
-	else 
+	else {
 		playerScore += Score.ENEMY_NORMAL;
-	this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
+		this.explosions.addNewSprite(enemy.sprite.position.x - enemy.sprite.width / 2, enemy.sprite.position.y - enemy.sprite.height / 2, scale, ExplosionSprite.NORMAL);
+	}
+	
 };
 
 /**
