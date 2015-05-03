@@ -83,12 +83,12 @@ function getCookieTypes () {
 function checkingLogin ($login, $password) {
     try {   
       //Creates DB connection
-      $db = new PDO("mysql:host=$server_name;dbname=TA3;charset=utf8", "root", "872027348");
+      $db = new PDO("mysql:host=$server_name;dbname=jtype;charset=utf8", "root", "jtype");
       $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
       //Gets PW 
       $query =     "
-         SELECT * FROM User WHERE Handle= ?
+         SELECT * FROM User WHERE Handle = ?
          ";
       $statement = $db->prepare( $query );
       $statement->bindValue(1, $login);
@@ -102,9 +102,9 @@ function checkingLogin ($login, $password) {
       foreach ($result as $row)
       {
 
-        $UserID = $row['UserID'];
+        $login = $row['Handle'];
         $passwordDB = $row['Password'];
-        $_SESSION ['userid'] = $UserID;
+        $_SESSION['login'] = $login;
       }
       //Check the password and return accordingly. If it matches the set the role of the session
       if (computeHash($password, $passwordDB) == $passwordDB) {

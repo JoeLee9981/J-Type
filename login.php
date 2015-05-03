@@ -19,13 +19,15 @@ $emailError = '';
 $passwordError = '';
 
 if (isset($_REQUEST['login']) && isset($_REQUEST['password'])) {
-	$login = htmlspecialchars($_REQUEST['email'], ENT_QUOTES);
+	$login = htmlspecialchars($_REQUEST['login'], ENT_QUOTES);
     $password = htmlspecialchars($_REQUEST['password'], ENT_QUOTES);
 	
 	// Register user if name, login, and password are provided
 	if ($login != '' && $password != '') {
-		if (checkingLogin($login, $password)) {
-			require 'views/loggedIn.php';
+		if (checkingLogin($login, $password)) 
+		// if(true)
+		{
+			require 'index.php';
 			return;
 		}
 		else {

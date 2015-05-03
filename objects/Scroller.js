@@ -191,7 +191,7 @@ Scroller.prototype.displayTitleScreen = function() {
 	
 	// Set click/touch and mouseover/out callbacks.
 	this.scoresButton.mouseup = this.scoresButton.touchend = function(data){
-		var win = window.open("scores.html", '_blank');
+		var win = window.open("scores.php", '_blank');
 	}
 
 	this.scoresButton.mouseover = function(data){		
@@ -247,7 +247,7 @@ Scroller.prototype.displayGameOverScreen = function() {
 	
 	// Set click/touch and mouseover/out callbacks.
 	this.scoresButton.mouseup = this.scoresButton.touchend = function(data){
-		var win = window.open("scores.html", '_blank');
+		var win = window.open("scores.php", '_blank');
 	}
 
 	this.scoresButton.mouseover = function(data){		

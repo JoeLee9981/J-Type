@@ -14,8 +14,7 @@ require 'helper/navbar.php';
 </head>
 <!-- body tag that contains information for the page -->
 <body>
-	<!-- Header div for the application  -->
-	<div class="header">TA Application</div>
+	
 	<!-- this div  contains the links-->
 	
 	<!-- information for the page -->
