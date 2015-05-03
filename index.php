@@ -59,11 +59,17 @@ require 'helper/navbar.php';
 		<div align="center">
 			<canvas id="game-canvas" width="800" height="600"></canvas>
 		</div>
-
+		<div class="panel">
+			<h1><p> Controls:</p></h1>
+			<p> Move: Arrow keys </p>
+			<p> Shoot: Spacebar </p>
+			<p> Bomb: A </p>
+		</div>
 		<script>
 			function init() {
 				main = new Main();
 			}
 		</script>
+		
 	</body>
 </html>
