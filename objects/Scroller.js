@@ -312,16 +312,19 @@ Scroller.prototype.moveViewportXBy = function(currTime, units) {
 		this.displayGameOverScreen();
 	}
 	if(currTime -  startTime - 15000 > 1000 && currTime -  startTime - 15000 <= 1400){
-		this.enemies.addNewSpriteOverrideXAndY(EnemySprite.MOTHER_SHIP, 400, 300, EnemySprite.PATTERN_1, .8);
+		this.enemies.addNewSprite(EnemySprite.MOTHER_SHIP, EnemySprite.PATTERN_7, .8);
 		this.speed -= 2000;
 	}
 	if(currTime -  startTime - 30000 > 1000 && currTime -  startTime - 30000 <= 1400){
+		this.enemies.addNewSprite(EnemySprite.MOTHER_SHIP, EnemySprite.PATTERN_7, .8);
 		this.speed -= 2000;
 	}
 	if(currTime -  startTime - 45000 > 1000 && currTime -  startTime - 45000 <= 1400){
+		this.enemies.addNewSprite(EnemySprite.MOTHER_SHIP, EnemySprite.PATTERN_7, .8);
 		this.speed -= 2000;
 	}
 	if(currTime -  startTime - 100000 > 1000 && currTime -  startTime - 100000 <= 1400){
+		this.enemies.addNewSprite(EnemySprite.MOTHER_SHIP, EnemySprite.PATTERN_7, .8);
 		this.speed -= 2000;
 	}
 	var newViewportX = this.viewportX + units;
