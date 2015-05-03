@@ -1,6 +1,6 @@
 <?php
 
-require 'helper/navbar.php'
+require 'helper/navbar.php';
 
 ?>
 
@@ -14,7 +14,7 @@ require 'helper/navbar.php'
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Endless Side Scroller</title>
+		<title>J-Type: Endless Side Scroller</title>
 
 		<script src="pixi.js-master/bin/pixi.dev.js"></script>
 		
@@ -31,7 +31,6 @@ require 'helper/navbar.php'
 		<script src="pools/BulletSpritesPool.js"></script>
 		<script src="pools/EnemySpritesPool.js"></script>
 		<script src="pools/PowerUpSpritesPool.js"></script>
-		<script src="pools/WallSpritesPool.js"></script>
 		
 		<script src="objects/BackgroundScene.js"></script>
 		<script src="objects/Enemies.js"></script>
@@ -39,6 +38,7 @@ require 'helper/navbar.php'
 		<script src="objects/Explosions.js"></script>
 		<script src="objects/Bullets.js"></script>
 		<script src="objects/PowerUps.js"></script>
+		<script src="objects/Score.js"></script>
 		<script src="objects/Scroller.js"></script>
 		
 		<script src="Main.js"></script>
@@ -47,14 +47,12 @@ require 'helper/navbar.php'
 			body {
 				background-color: #000000;
 			}
+
 			canvas {
 				background-color: #222222;
 			}
 		</style>
-		<title> Final Project Home </title>
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    	<!-- <link rel="stylesheet" type="text/css" href="http://uofu-cs4540-30.cloudapp.net/my_work/TA7/css-styles/cs4540basic.css"> -->
-    	<?php echo $navbar ?>
+		<?php echo $navbar ?>
 	</head>
 
 	<body onload="init();">
