@@ -33,8 +33,8 @@ if(isset($_REQUEST['Handle']) && isset($_REQUEST['Score']))
        VALUES            (?, ?)
        ";
  	  $statement = $db->prepare( $query );
-    $statement->bindValue(1, $_REQUEST['login']);
-    $statement->bindValue(2, $_REQUEST['score']);
+    $statement->bindValue(1, $_REQUEST['Handle']);
+    $statement->bindValue(2, $_REQUEST['Score']);
     // var_dump($statement);
 
     $statement->execute(  );

@@ -206,20 +206,22 @@ Scroller.prototype.displayTitleScreen = function() {
 	stage.addChild(this.scoresButton);
 };
 
- // function addScoreToDB(data) {
+function addScoreToDB(score) {
         
- //          $.ajax({
- //            type:'POST',
- //            url:'addScoreToDatabase.php',
- //            data:$({"Handle": <%= Session["login"]; %>, "Score": data}),
- //            dataType:'json',
-            
- //            success: function(response) {
- //            	alert("Added to Database");
- //            }
-            
- //          });
- //        };
+	if(login == "") {
+		return;
+	}
+
+	$.ajax({
+	type:'POST',
+	url:'addScoreToDatabase.php',
+	data: {"Handle": login, "Score": score},
+		dataType:'json',  
+		success: function(response) {
+           	alert("Added to Database");
+		}
+	});
+}
         
 
 /**
@@ -235,7 +237,7 @@ Scroller.prototype.displayGameOverScreen = function() {
 	this.playAgainButton.position.x = 200;
 	this.playAgainButton.position.y = 300;
 	this.playAgainButton.interactive = true;
-	// addScoreToDB(playerScore);
+	addScoreToDB(playerScore);
 	// Set click/touch and mouseover/out callbacks.
 	this.playAgainButton.mouseup = this.playAgainButton.touchend = function(data){
 		// TODO: Save score somewhere before playing again.

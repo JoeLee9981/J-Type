@@ -42,7 +42,7 @@ require 'helper/navbar.php';
 		<script src="objects/Scroller.js"></script>
 		
 		<script src="Main.js"></script>
-
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<style>
 			body {
 				background-color: #000000;
@@ -74,6 +74,9 @@ require 'helper/navbar.php';
 		</div>
 		</div>
 		<script>
+		
+			var login = "<?= $login ?>";
+		
 			function init() {
 				main = new Main();
 			}
